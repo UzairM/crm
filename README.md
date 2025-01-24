@@ -17,7 +17,6 @@ finance-crm/
 ## Technology Stack
 
 ### Frontend (/app)
-- Remix.js for server-side rendering and routing
 - React for UI components
 - TypeScript for type safety
 - TailwindCSS for styling

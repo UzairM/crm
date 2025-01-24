@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer base {
+  :root {
+    /* Dark navy background */
+    --background: 222 47% 11%;
+    --foreground: 0 0% 95%;
+
+    /* Card backgrounds in charcoal */
+    --card: 220 18% 13%;
+    --card-foreground: 0 0% 95%;
+
+    /* Popover in dark theme */
+    --popover: 220 18% 13%;
+    --popover-foreground: 0 0% 95%;
+
+    /* Teal accents for primary actions */
+    --primary: 190 100% 42%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Gold accents for secondary actions */
+    --secondary: 43 54% 66%;
+    --secondary-foreground: 220 18% 13%;
+
+    /* Muted elements in dark theme */
+    --muted: 220 18% 18%;
+    --muted-foreground: 220 10% 70%;
+
+    /* Teal accent for interactive elements */
+    --accent: 190 100% 42%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Destructive actions in dark theme */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Subtle borders */
+    --border: 220 18% 20%;
+    --input: 220 18% 20%;
+    --ring: 190 100% 42%;
+
+    /* Chart colors */
+    --chart-1: 190 100% 42%;
+    --chart-2: 43 54% 66%;
+    --chart-3: 220 18% 40%;
+    --chart-4: 190 80% 50%;
+    --chart-5: 43 70% 50%;
+
+    --radius: 0.5rem
+  }
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%
+  }
+}
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+} 

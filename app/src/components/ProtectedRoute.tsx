@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from '@remix-run/react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { ory } from '../lib/ory'
 import { LoadingSpinner } from './LoadingSpinner'
@@ -24,10 +24,8 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     async function checkSession() {
       if (!isHydrated) return
       
-      console.log('ProtectedRoute: Starting session check')
       try {
         const { data: newSession } = await ory.toSession()
-        console.log('ProtectedRoute: Session valid', newSession)
 
         if (!mounted) return
 
@@ -41,10 +39,8 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
             fullName: null,
             isActive: true,
           })
-          console.log('ProtectedRoute: Set user with email:', traits.email)
         }
       } catch (error) {
-        console.error('ProtectedRoute: Session invalid', error)
         if (mounted) {
           setSession(null)
           setUser(null)
@@ -52,7 +48,6 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
         }
       } finally {
         if (mounted) {
-          console.log('ProtectedRoute: Check complete')
           setIsChecking(false)
         }
       }
@@ -65,26 +60,9 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     }
   }, [isHydrated, location.pathname, setSession, setUser, navigate])
 
-  // During SSR, render children
-  if (!isHydrated) {
-    return <>{children}</>
-  }
-
   if (isChecking) {
-    console.log('ProtectedRoute: Showing loading spinner')
-    return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <LoadingSpinner />
-      </div>
-    )
+    return <LoadingSpinner />
   }
 
-  if (!session) {
-    console.log('ProtectedRoute: No session, redirecting to login')
-    navigate(`/login?return_to=${encodeURIComponent(location.pathname)}`, { replace: true })
-    return null
-  }
-
-  console.log('ProtectedRoute: Rendering protected content')
   return <>{children}</>
 } 

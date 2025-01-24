@@ -1,86 +1,23 @@
-import { json, redirect } from '@remix-run/node'
-import { useLoaderData } from '@remix-run/react'
-import { ory } from '../lib/ory'
+import { json } from '@remix-run/node'
 import { ProtectedRoute } from '../components/ProtectedRoute'
 import { useAuthStore } from '../stores/auth'
-import { useUIStore } from '../stores/ui'
-import { useEffect } from 'react'
-import type { Session } from '@ory/client'
-import { LoadingSpinner } from '../components/LoadingSpinner'
+import { useHydrated } from '../hooks/useHydrated'
 
-export async function loader({ request }: { request: Request }) {
-  try {
-    // Get the session from ORY using native flow
-    const cookie = request.headers.get('cookie')
-    if (!cookie) {
-      throw new Error('No session cookie found')
-    }
-
-    // Use native flow to verify session
-    const { data: session } = await ory.toSession({
-      cookie,
-      xSessionToken: cookie.split('ory_session_token=')[1]?.split(';')[0],
-    })
-    
-    // If we have a session, return the user info
-    if (!session?.identity?.traits?.email) {
-      throw new Error('Invalid session data')
-    }
-
-    return json({
-      session,
-      user: {
-        email: session.identity.traits.email,
-      },
-    })
-  } catch (error) {
-    // If no valid session, redirect to login
-    return redirect('/login')
-  }
+export async function loader() {
+  // Just return empty data, ProtectedRoute will handle session check
+  return json({})
 }
 
 export default function Dashboard() {
-  const { user, session } = useLoaderData<typeof loader>()
-  const setSession = useAuthStore((state) => state.setSession)
-  const setUser = useAuthStore((state) => state.setUser)
-  const setLoading = useUIStore((state) => state.setLoading)
-  const isLoading = useUIStore((state) => state.isLoading)
+  const user = useAuthStore((state) => state.user)
+  const session = useAuthStore((state) => state.session)
+  const isHydrated = useHydrated()
 
-  useEffect(() => {
-    setLoading(true)
-    try {
-      if (session && session.identity) {
-        setSession(session as Session)
-        setUser({
-          id: session.identity.id,
-          email: session.identity.traits.email,
-          role: 'None', // This will be updated when we implement role management
-          fullName: null,
-          isActive: true,
-        })
-      }
-    } catch (error) {
-      console.error('Error setting session:', error)
-    } finally {
-      setLoading(false)
-    }
-  }, [session, setSession, setUser, setLoading])
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <LoadingSpinner />
-      </div>
-    )
-  }
-
-  if (!user || !session) {
-    return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <p className="text-gray-500">No user data available. Please log in again.</p>
-      </div>
-    )
-  }
+  console.log('Dashboard render:', { 
+    user, 
+    session: session?.identity?.id,
+    isHydrated 
+  })
 
   return (
     <ProtectedRoute>
@@ -94,7 +31,9 @@ export default function Dashboard() {
                 </div>
               </div>
               <div className="flex items-center">
-                <span className="text-gray-700">{user.email}</span>
+                {isHydrated ? (
+                  <span className="text-gray-700">{user?.email || ''}</span>
+                ) : null}
               </div>
             </div>
           </div>
