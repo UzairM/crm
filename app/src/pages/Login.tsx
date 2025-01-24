@@ -11,6 +11,7 @@ import { Input } from "../components/ui/input"
 import { Label } from "../components/ui/label"
 import { Alert, AlertDescription } from "../components/ui/alert"
 import { AlertCircle } from "lucide-react"
+import { getMe } from '../lib/api'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -24,13 +25,21 @@ export default function Login() {
       try {
         const { data: session } = await ory.toSession()
         setSession(session)
-        navigate('/dashboard')
+        
+        // Get user data from core CRM
+        try {
+          const user = await getMe()
+          setUser(user)
+          navigate('/dashboard')
+        } catch (error) {
+          console.error('Failed to fetch user data:', error)
+        }
       } catch (err) {
         // No existing session
       }
     }
     checkSession()
-  }, [navigate, setSession])
+  }, [navigate, setSession, setUser])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -68,15 +77,14 @@ export default function Login() {
       // Store the session data
       if (data.session) {
         setSession(data.session)
-        if (data.session.identity) {
-          const traits = data.session.identity.traits as { email: string }
-          setUser({
-            id: data.session.identity.id,
-            email: traits.email,
-            role: 'None',
-            fullName: null,
-            isActive: true,
-          })
+        
+        // Get user data from core CRM
+        try {
+          const user = await getMe()
+          setUser(user)
+        } catch (error) {
+          console.error('Failed to fetch user data:', error)
+          throw error
         }
       }
 

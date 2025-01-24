@@ -6,7 +6,10 @@ const prisma = new PrismaClient()
 // Initialize ORY SDK
 const ory = new FrontendApi(
   new Configuration({
-    basePath: process.env.ORY_SDK_URL,
+    basePath: process.env.ORY_BASE_URL || 'http://localhost:4000',
+    baseOptions: {
+      withCredentials: true
+    }
   })
 )
 
@@ -46,16 +49,12 @@ export async function requireAuth(req: any, res: any, next: any) {
 
     // If user doesn't exist, create one with default role CLIENT
     if (!user) {
-      const traits = session.identity.traits as { email: string; name?: { first?: string; last?: string } }
-      const fullName = traits.name 
-        ? `${traits.name.first || ''} ${traits.name.last || ''}`.trim() 
-        : null
-
+      const traits = session.identity.traits as { email: string }
+      
       user = await prisma.user.create({
         data: {
           oryIdentityId: session.identity.id,
           email: traits.email,
-          name: fullName,
           role: Role.CLIENT,
         },
       })

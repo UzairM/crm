@@ -44,4 +44,27 @@ router.post('/:id/role', requireAuth, requireRole([Role.MANAGER]), async (req, r
   }
 })
 
+// GET /api/users/me
+router.get('/me', requireAuth, async (req, res) => {
+  try {
+    const user = req.user
+
+    if (!user) {
+      res.status(401).json({ error: 'User not found' })
+      return
+    }
+
+    res.json({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      fullName: user.name,
+      isActive: user.isActive
+    })
+  } catch (error) {
+    console.error('Error fetching user:', error)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+})
+
 export default router 

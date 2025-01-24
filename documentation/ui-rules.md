@@ -15,7 +15,7 @@ This document describes the core principles for building a modern, responsive, a
 • For more complex or shared state (e.g., user session, unread ticket counts), use a global state mechanism (React Context or an external library if needed).  
 
 1.3 Integration with the Backend (Express, AI Service)  
-• Each component that needs data from the Core CRM or AI service calls loader/action endpoints in Remix; in turn, these talk to the backend APIs.  
+• Each component that needs data from the Core CRM or AI service uses React Query/SWR hooks; these talk to the backend APIs.  
 • Maintain consistent naming and data contracts. A "TicketList" component, for example, should expect an array of ticket objects with fields that match the Express API response.  
 
 ---
@@ -78,4 +78,4 @@ This document describes the core principles for building a modern, responsive, a
 
 ## Conclusion
 
-These UI rules ensure the Finance CRM remains modern, responsive, and user-friendly. By leveraging Remix's structure, focusing on accessibility, and tying into the Express + AI backend consistently, the user experience will be seamless for Agents, Managers, and Clients alike—all while retaining the professionalism required in the finance sector. 
+These UI rules ensure the Finance CRM remains modern, responsive, and user-friendly. By leveraging React's structure, focusing on accessibility, and tying into the Express + AI backend consistently, the user experience will be seamless for Agents, Managers, and Clients alike—all while retaining the professionalism required in the finance sector. 

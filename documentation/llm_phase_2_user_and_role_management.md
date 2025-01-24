@@ -12,5 +12,5 @@
 [x] BACKEND: Add POST /users/:id/role to assign role ("Agent", "Manager", "Client"), restricted to Manager.  
 [x] BACKEND: Confirm that non-Managers cannot set roles (permission checks).  
 [x] BACKEND: Verify role-based endpoints (forbidden if not Manager).  
-[ ] BACKEND: Test login flow (sign in with ORY, user created in local DB).  
-[ ] BACKEND: Verify environment variables pass to containers if Dockerized.
+[x] BACKEND: Test login flow (sign in with ORY, user created in local DB).  
+[x] BACKEND: Verify environment variables pass to containers if Dockerized.

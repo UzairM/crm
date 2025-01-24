@@ -1,7 +1,7 @@
-# Finance CRM MVP: Two-Service Approach (Core + AI) with React Remix Frontend
+# Finance CRM MVP: Two-Service Approach (Core + AI) with React Frontend
 
 This document describes a Finance CRM MVP that uses:  
-• A React Remix frontend (TypeScript) with ORY SDK for in-app login.  
+• A React frontend (TypeScript) with ORY SDK for in-app login.  
 • Two backend microservices:  
   1. Core CRM Service (TypeScript).  
   2. AI Service (Python).  
@@ -13,7 +13,7 @@ The system handles ticketing, client management, AI-suggested responses, auto-ge
 ## 1. Architecture Overview
 
      ┌───────────────────────────────────┐
-     │   React Remix Frontend (ORY SDK) │
+     │   React Frontend (ORY SDK) │
      │   TypeScript + UI for Agents,    │
      │   Managers, Clients              │
      └───────────────┬──────────────────┘
@@ -38,7 +38,7 @@ The system handles ticketing, client management, AI-suggested responses, auto-ge
 ## 2. MVP Features & Flows
 
 1) Basic Support Agent UI  
-   • React Remix pages for Agents: ticket lists, detail views, internal notes, unread/new sorting.  
+   • React pages for Agents: ticket lists, detail views, internal notes, unread/new sorting.  
    • ORY SDK handles login on the frontend; once the user is authenticated, the UI calls the Core CRM to check if the user record exists locally. If not, the CRM creates a new record referencing the user's ORY identity.  
    • After local user creation, a Manager can assign a role (e.g., Agent).  
 
@@ -86,7 +86,7 @@ The system handles ticketing, client management, AI-suggested responses, auto-ge
 ## 3. Userflows & Data Handling
 
 1) ORY Login Flow with Local Role Sync  
-   • The user opens the React Remix app and initiates login via the ORY SDK.  
+   • The user opens the React app and initiates login via the ORY SDK.  
    • On success, the frontend obtains ID & tokens from ORY.  
    • The frontend calls "GET /users/me" (CRM endpoint) with the ID token.  
    • The Core CRM checks if this ORY ID exists in the local DB. If not, it creates a record in the "User" table with no assigned role.  
@@ -119,7 +119,7 @@ The system handles ticketing, client management, AI-suggested responses, auto-ge
 
 ## 4. Tech Stack & Modules
 
-• React Remix (Frontend)  
+• React Frontend (ORY SDK)  
   – TypeScript-based.  
   – ORY SDK for embedded login (no separate hosted page required).  
   – Components/Routes: /login, /dashboard, /manager, /portal, /clients, /bulk-email.  
@@ -175,7 +175,7 @@ The system handles ticketing, client management, AI-suggested responses, auto-ge
 
 1) Configure ORY  
    • Setup an ORY project, retrieve the necessary credentials.  
-   • In the React Remix app, install the ORY SDK and configure the environment variables.  
+   • In the React app, install the ORY SDK and configure the environment variables.  
 
 2) Build the Frontend with ORY SDK  
    • A /login route that uses ORY's SDK to handle user credentials.  
@@ -197,7 +197,7 @@ The system handles ticketing, client management, AI-suggested responses, auto-ge
    • "/ai-suggested-reply" for generating text suggestions.  
    • Additional optional endpoints for /auto-generate-faq, /ingest-email, etc.  
 
-6) React Remix UI  
+6) React UI  
    • Agent Dashboard: list unread tickets, show ticket details, request AI suggestions.  
    • Manager Views: set SLA, assign roles, see dashboards.  
    • Client Portal: see user's own tickets, add comments.  
@@ -230,5 +230,5 @@ The system handles ticketing, client management, AI-suggested responses, auto-ge
 
 ## Conclusion
 
-With ORY SDK integration on the React Remix frontend, the login flow remains a seamless in-app experience. Upon successful ORY authentication, the Core CRM Service checks for an existing local user record or creates one on the fly. A Manager can then set local roles. This meets all MVP requirements for a two-service Finance CRM architecture (Core + AI), including ticketing, AI-assisted replies, multi-channel ingestion, bulk email marketing, client portal, and manager controls (SLA, user roles, dashboards). This architecture can be extended with advanced AI and marketing automation as business needs evolve.
+With ORY SDK integration on the React frontend, the login flow remains a seamless in-app experience. Upon successful ORY authentication, the Core CRM Service checks for an existing local user record or creates one on the fly. A Manager can then set local roles. This meets all MVP requirements for a two-service Finance CRM architecture (Core + AI), including ticketing, AI-assisted replies, multi-channel ingestion, bulk email marketing, client portal, and manager controls (SLA, user roles, dashboards). This architecture can be extended with advanced AI and marketing automation as business needs evolve.
 

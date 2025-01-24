@@ -2,7 +2,7 @@
 
 This document covers best practices, common pitfalls, and important considerations for each technology used in the Finance CRM MVP (as described in high_level_overview.md). The solution comprises:
 
-1. A React Remix frontend (TypeScript).  
+1. A React frontend (TypeScript).  
 2. A Core CRM Service (TypeScript, Node.js with Express).  
 3. An AI Service (Python, FastAPI).  
 4. ORY for authentication (hosted service, with the ORY SDK on the frontend).  
@@ -12,7 +12,11 @@ Below are guidelines, conventions, and limitations for each primary component.
 
 ---
 
-## 1. Frontend: React Remix with TypeScript
+## Tech Stack Overview
+
+1. A React frontend (TypeScript).
+
+## 1. Frontend: React with TypeScript
 
 ### 1.1 Best Practices
 
@@ -36,6 +40,10 @@ Below are guidelines, conventions, and limitations for each primary component.
    - Use secure cookies to store session tokens, rather than localStorage, to reduce XSS risk.  
    - If you need persistent sessions, implement refresh tokens or ORY-based session extensions.
 
+3. React Features:
+- Utilize React Router for handling routing and data loading.
+- Use Zustand for state management.
+
 ### 1.2 Limitations & Common Pitfalls
 
 1. SEO & Routing:  
@@ -49,6 +57,8 @@ Below are guidelines, conventions, and limitations for each primary component.
 3. Large Data Rendering:  
    - Consider pagination or lazy-loading for large volumes of data (tickets, client lists).  
    - Over-fetching can degrade client-side performance.
+
+4. Embed or customize ORY's login/registration flows within React.
 
 ---
 
@@ -242,4 +252,4 @@ Below are guidelines, conventions, and limitations for each primary component.
 
 ## Conclusion
 
-By following these guidelines, the Finance CRM MVP—comprising a React Remix TypeScript frontend, an Express-based Node.js Core service, and a Python FastAPI AI service—can be developed in a flexible, secure, and scalable manner. ORY integration offloads user authentication, while local role management ensures fine-grained access control. Proper data modeling, logging, and testing will help maintain system stability and extensibility as the product evolves. 
+By following these guidelines, the Finance CRM MVP—comprising a React TypeScript frontend, an Express-based Node.js Core service, and a Python FastAPI AI service—can be developed in a flexible, secure, and scalable manner. ORY integration offloads user authentication, while local role management ensures fine-grained access control. Proper data modeling, logging, and testing will help maintain system stability and extensibility as the product evolves. 

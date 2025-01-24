@@ -4,6 +4,7 @@ import { ory } from '../lib/ory'
 import { LoadingSpinner } from './LoadingSpinner'
 import { useAuthStore } from '../stores/auth'
 import { useHydrated } from '../hooks/useHydrated'
+import { getMe } from '../lib/api'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -24,20 +25,28 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
       if (!isHydrated) return
       
       try {
+        // First check ORY session
         const { data } = await ory.toSession()
 
         if (!mounted) return
 
         if (data.identity) {
-          const traits = data.identity.traits as { email: string }
-          setUser({
-            id: data.identity.id,
-            email: traits.email,
-            role: 'None',
-            fullName: null,
-            isActive: true,
-          })
           setSession(data)
+          
+          // Then fetch user data from core CRM
+          try {
+            const user = await getMe()
+            if (mounted) {
+              setUser(user)
+            }
+          } catch (error) {
+            console.error('Failed to fetch user data:', error)
+            if (mounted) {
+              setSession(null)
+              setUser(null)
+              navigate(`/login?return_to=${encodeURIComponent(location.pathname)}`, { replace: true })
+            }
+          }
         } else {
           if (mounted) {
             setSession(null)

@@ -13,13 +13,22 @@ module.exports = {
     ecmaFeatures: {
       jsx: true,
     },
+    project: "./tsconfig.json",
+    tsconfigRootDir: __dirname,
   },
   env: {
     browser: true,
     commonjs: true,
     es6: true,
   },
-  ignorePatterns: ["!**/.server", "!**/.client"],
+  ignorePatterns: [
+    "!**/.server",
+    "!**/.client",
+    "dist",
+    ".eslintrc.cjs",
+    "node_modules",
+    "*.config.ts"
+  ],
 
   // Base config
   extends: ["eslint:recommended"],
@@ -45,6 +54,9 @@ module.exports = {
           { name: "NavLink", linkAttribute: "to" },
         ],
       },
+      rules: {
+        "jsx-a11y/heading-has-content": "off" // Disable this rule as we're using forwardRef
+      }
     },
 
     // Typescript
@@ -60,6 +72,9 @@ module.exports = {
           typescript: {
             alwaysTryTypes: true,
             project: "./tsconfig.json"
+          },
+          node: {
+            extensions: [".js", ".jsx", ".ts", ".tsx"]
           }
         }
       },

@@ -20,6 +20,12 @@ enum Role {
   NONE
 }
 
+enum TicketStatus {
+  NEW
+  OPEN
+  CLOSED
+}
+
 model User {
   id            Int      @id @default(autoincrement())
   oryIdentityId String   @unique
@@ -29,6 +35,11 @@ model User {
   isActive      Boolean  @default(true)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  // Relations
+  assignedTickets Ticket[]        @relation("AssignedTickets")
+  clientTickets   Ticket[]        @relation("ClientTickets")
+  messages        TicketMessage[]
 }
 
 // Test model to verify database connection
@@ -36,4 +47,42 @@ model TestConnection {
   id        Int      @id @default(autoincrement())
   message   String
   createdAt DateTime @default(now())
+}
+
+model Ticket {
+  id               Int          @id @default(autoincrement())
+  subject          String
+  status          TicketStatus @default(NEW)
+  assignedAgentId Int?
+  clientId        Int
+  isRead          Boolean      @default(false)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  // Relations
+  assignedAgent   User?        @relation("AssignedTickets", fields: [assignedAgentId], references: [id])
+  client         User         @relation("ClientTickets", fields: [clientId], references: [id])
+  messages       TicketMessage[]
+
+  @@index([assignedAgentId])
+  @@index([clientId])
+  @@index([status])
+  @@index([isRead])
+}
+
+model TicketMessage {
+  id             Int      @id @default(autoincrement())
+  ticketId       Int
+  senderId       Int
+  text           String   @db.Text
+  isInternalNote Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  // Relations
+  ticket         Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  sender         User     @relation(fields: [senderId], references: [id])
+
+  @@index([ticketId])
+  @@index([senderId])
+  @@index([isInternalNote])
 }

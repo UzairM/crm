@@ -1,12 +1,12 @@
 # Finance CRM
 
-A modern CRM system built with React (Remix), Node.js, and Python, featuring AI-powered customer service capabilities.
+A modern CRM system built with React, Node.js, and Python, featuring AI-powered customer service capabilities.
 
 ## Project Structure
 
 ```
 finance-crm/
-├── app/                    # Frontend Remix application
+├── app/                    # Frontend React application
 ├── services/              # Backend services
 │   ├── core-crm/         # Core CRM service (Node.js/Express)
 │   └── ai-service/       # AI service (Python/FastAPI)
@@ -55,7 +55,7 @@ Detailed setup instructions for each service can be found in their respective di
 Each service can be run independently in development mode:
 
 ```bash
-# Frontend (Remix)
+# Frontend (React)
 cd app
 npm run dev
 
