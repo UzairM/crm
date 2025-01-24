@@ -13,6 +13,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  MANAGER
+  AGENT
+  CLIENT
+  NONE
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  oryIdentityId String   @unique
+  email         String   @unique
+  name          String?
+  role          Role     @default(NONE)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
 // Test model to verify database connection
 model TestConnection {
   id        Int      @id @default(autoincrement())

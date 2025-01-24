@@ -24,8 +24,11 @@ RUN npx prisma generate
 # Build TypeScript
 RUN npm run build
 
-# Expose port
-EXPOSE 3001
+# Default port
+ENV PORT=3001
+
+# Expose port (use ENV variable)
+EXPOSE ${PORT}
 
 # Start the server
 CMD ["npm", "start"] 
