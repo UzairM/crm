@@ -4,11 +4,12 @@ import { ory } from '../lib/ory'
 import { useAuthStore } from '../stores/auth'
 import { useUIStore } from '../stores/ui'
 import type { AxiosError } from 'axios'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import type { UiNodeInputAttributes } from '@ory/client'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card"
+import { Button } from "../components/ui/button"
+import { Input } from "../components/ui/input"
+import { Label } from "../components/ui/label"
+import { Alert, AlertDescription } from "../components/ui/alert"
 import { AlertCircle } from "lucide-react"
 
 export default function Login() {
@@ -37,12 +38,21 @@ export default function Login() {
     setError(null)
     
     try {
-      const formData = new FormData(e.currentTarget)
+      const form = e.currentTarget as HTMLFormElement
+      const formData = new FormData(form)
       const email = formData.get('email') as string
       const password = formData.get('password') as string
 
       // First get a login flow
       const { data: flow } = await ory.createBrowserLoginFlow()
+
+      // Find the CSRF token
+      const csrfNode = flow.ui.nodes.find(
+        node => 
+          node.type === 'input' && 
+          (node.attributes as UiNodeInputAttributes).name === 'csrf_token'
+      )
+      const csrfToken = csrfNode ? (csrfNode.attributes as UiNodeInputAttributes).value : ''
 
       // Then submit the login flow
       const { data } = await ory.updateLoginFlow({
@@ -51,10 +61,7 @@ export default function Login() {
           method: 'password',
           identifier: email,
           password,
-          csrf_token: flow.ui.nodes.find(
-            node => node.attributes.node_type === 'input' && 
-              node.attributes.name === 'csrf_token'
-          )?.attributes?.value || '',
+          csrf_token: csrfToken,
         },
       })
 

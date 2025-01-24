@@ -1,28 +1,21 @@
 import { ProtectedRoute } from '../components/ProtectedRoute'
 import { useAuthStore } from '../stores/auth'
 import { useHydrated } from '../hooks/useHydrated'
-import { useNavigate } from 'react-router-dom'
 import { ory } from '../lib/ory'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Button } from "../components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card"
+import { Avatar, AvatarFallback } from "../components/ui/avatar"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../components/ui/dropdown-menu"
 import { LogOut, User, BarChart3, Users, Ticket, Settings } from "lucide-react"
 
 export default function Dashboard() {
   const user = useAuthStore((state) => state.user)
-  const session = useAuthStore((state) => state.session)
   const isHydrated = useHydrated()
-  const navigate = useNavigate()
-  const setUser = useAuthStore((state) => state.setUser)
-  const setSession = useAuthStore((state) => state.setSession)
 
   const handleLogout = async () => {
     try {
-      await ory.createBrowserLogoutFlow()
-      setUser(null)
-      setSession(null)
-      navigate('/login')
+      const { data } = await ory.createBrowserLogoutFlow()
+      window.location.href = data.logout_url
     } catch (error) {
       console.error('Logout failed:', error)
     }

@@ -44,9 +44,6 @@ module.exports = {
           { name: "Link", linkAttribute: "to" },
           { name: "NavLink", linkAttribute: "to" },
         ],
-        "import/resolver": {
-          typescript: {},
-        },
       },
     },
 
@@ -56,15 +53,15 @@ module.exports = {
       plugins: ["@typescript-eslint", "import"],
       parser: "@typescript-eslint/parser",
       settings: {
-        "import/internal-regex": "^~/",
+        "import/parsers": {
+          "@typescript-eslint/parser": [".ts", ".tsx"]
+        },
         "import/resolver": {
-          node: {
-            extensions: [".ts", ".tsx"],
-          },
           typescript: {
             alwaysTryTypes: true,
-          },
-        },
+            project: "./tsconfig.json"
+          }
+        }
       },
       extends: [
         "plugin:@typescript-eslint/recommended",
