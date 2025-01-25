@@ -16,7 +16,7 @@ COPY . .
 
 # Set environment variables for Docker services
 ENV VITE_API_URL=https://help.elphinstone.us:3001
-ENV VITE_CORE_CRM_URL=https://help.elphinstone.us:3001
+ENV VITE_CORE_CRM_URL=https://help.elphinstone.us:2000
 ENV VITE_AI_SERVICE_URL=http://ai-service:8000
 ENV VITE_ORY_SDK_URL=https://auth.elphinstone.us
 
