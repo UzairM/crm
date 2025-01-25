@@ -4,14 +4,10 @@
 email="your-email@elphinstone.us"
 # Domain name
 domain="help.elphinstone.us"
-# RSA key size
-rsa_key_size=4096
-# Use staging environment for testing (1 for staging, 0 for production)
-staging=1
 
-# Stop any running nginx container
-echo "### Stopping nginx if running ..."
-docker-compose stop nginx
+# Stop any running containers
+echo "### Stopping existing containers ..."
+docker-compose down
 
 # Make sure the certbot directory exists
 mkdir -p "./certbot/conf"
@@ -23,39 +19,34 @@ if [ ! -e "./certbot/conf/options-ssl-nginx.conf" ] || [ ! -e "./certbot/conf/ss
   curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot/certbot/ssl-dhparams.pem > "./certbot/conf/ssl-dhparams.pem"
 fi
 
-# Create dummy certificates for Nginx to start
-if [ ! -d "./certbot/conf/live/$domain" ]; then
-  echo "### Creating dummy certificate for $domain ..."
-  mkdir -p "./certbot/conf/live/$domain"
-  openssl req -x509 -nodes -newkey rsa:$rsa_key_size -days 1\
-    -keyout "./certbot/conf/live/$domain/privkey.pem" \
-    -out "./certbot/conf/live/$domain/fullchain.pem" \
-    -subj "/CN=localhost"
+echo "### Starting Nginx ..."
+docker-compose up -d nginx
+
+# Wait for Nginx to start
+echo "### Waiting for Nginx to start ..."
+sleep 5
+
+echo "### Testing domain accessibility ..."
+if curl -s -o /dev/null "http://$domain/.well-known/acme-challenge/"; then
+    echo "Domain is accessible, proceeding with certificate request..."
+else
+    echo "Error: Domain $domain is not accessible."
+    echo "Please ensure:"
+    echo "1. Domain points to this server's IP"
+    echo "2. Port 80 is open and accessible"
+    echo "3. No firewall is blocking the connection"
+    exit 1
 fi
 
 echo "### Requesting Let's Encrypt certificate for $domain ..."
 
-# Select appropriate certbot command based on staging/prod
-case $staging in
-  1) staging_arg="--staging";;
-  0) staging_arg="";;
-esac
-
-# Get the certificate using standalone mode
-docker-compose run --rm certbot certonly \
-  $staging_arg \
-  --standalone \
-  --preferred-challenges http \
-  --email $email \
-  --agree-tos \
-  --no-eff-email \
-  -d $domain
-
-echo "### Starting nginx ..."
-docker-compose up -d nginx
-
-echo "### Deleting dummy certificate for $domain ..."
-rm -rf "./certbot/conf/live/$domain"
+# Get the certificate
+docker-compose run --rm --entrypoint "\
+  certbot certonly --webroot -w /var/www/certbot \
+    --email $email \
+    --agree-tos \
+    --no-eff-email \
+    -d $domain" certbot
 
 echo "### Reloading Nginx ..."
 docker-compose exec nginx nginx -s reload 
