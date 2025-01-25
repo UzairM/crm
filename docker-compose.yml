@@ -28,6 +28,8 @@ services:
       - NODE_ENV=${NODE_ENV:-development}
       - ORY_SDK_URL=${ORY_SDK_URL:-https://auth.elphinstone.us}
       - CORE_CRM_URL=http://core-crm:3001
+      - VITE_API_URL=${VITE_API_URL:-http://localhost:3001}
+      - VITE_ORY_SDK_URL=${VITE_ORY_SDK_URL:-https://auth.elphinstone.us}
     ports:
       - "${FRONTEND_PORT:-3000}:3000"
     depends_on:
@@ -46,6 +48,8 @@ services:
       - AI_SERVICE_URL=http://ai-service:8000
       - JWT_SECRET=${JWT_SECRET:-your-secret-key}
       - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-24h}
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:3000}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:3000,https://help.elphinstone.us}
     ports:
       - "${CORE_CRM_PORT:-3001}:3001"
     depends_on:
@@ -62,6 +66,8 @@ services:
       - DATABASE_URL=postgresql://${POSTGRES_USER:-admin}:${POSTGRES_PASSWORD:-admin123}@postgres:5432/${POSTGRES_DB:-crm_db}
       - NODE_ENV=${NODE_ENV:-development}
       - PYTHONUNBUFFERED=1
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:3000,https://help.elphinstone.us}
     ports:
       - "${AI_SERVICE_PORT:-8000}:8000"
     depends_on:
