@@ -48,7 +48,7 @@ export function TicketDetail() {
       
       // Fetch client info if we have a ticket
       if (ticketResponse.data.clientId) {
-        const clientResponse = await api.get(`/api/users/${ticketResponse.data.clientId}`)
+        const clientResponse = await api.get(`/api/clients/${ticketResponse.data.clientId}`)
         setClient(clientResponse.data)
       }
     } catch (err) {

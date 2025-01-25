@@ -1,0 +1,1 @@
+[x] Create essential API endpoints for listing articles, retrieving article details, creating, updating, and deleting articles (restricted to managers) 

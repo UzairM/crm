@@ -4,7 +4,7 @@
 Create a basic knowledge base system allowing managers to create and manage articles, with simple categorization and search functionality. Focus on essential features that provide immediate value.
 
 ## Database Tasks
-[ ] Create knowledge_articles table
+[x] Create knowledge_articles table
   - id (PK)
   - title
   - content (rich text)
@@ -14,14 +14,14 @@ Create a basic knowledge base system allowing managers to create and manage arti
   - updated_at
 
 ## Backend Tasks
-[ ] Create Essential API Endpoints:
+[x] Create Essential API Endpoints:
   - GET /api/kb/articles - List all articles
   - GET /api/kb/articles/:id - Get article details
   - POST /api/kb/articles - Create article (MANAGER only)
   - PUT /api/kb/articles/:id - Update article (MANAGER only)
   - DELETE /api/kb/articles/:id - Delete article (MANAGER only)
 
-[ ] Implement Basic Role-Based Access:
+[x] Implement Basic Role-Based Access:
   - Managers can create/edit/delete articles
   - Agents and Clients can view published articles
 

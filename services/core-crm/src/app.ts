@@ -5,6 +5,7 @@ import { json } from 'body-parser'
 import usersRouter from './routes/users'
 import ticketsRouter from './routes/tickets'
 import healthRoutes from './routes/health'
+import knowledgeRouter from './routes/knowledge'
 
 const app = express()
 
@@ -20,5 +21,6 @@ app.use(json())
 app.use('/', healthRoutes)
 app.use('/api/users', usersRouter)
 app.use('/api/tickets', ticketsRouter)
+app.use('/api/kb', knowledgeRouter)
 
 export default app 
