@@ -9,6 +9,10 @@ rsa_key_size=4096
 # Use staging environment for testing (1 for staging, 0 for production)
 staging=1
 
+# Stop any running nginx container
+echo "### Stopping nginx if running ..."
+docker-compose stop nginx
+
 # Make sure the certbot directory exists
 mkdir -p "./certbot/conf"
 mkdir -p "./certbot/www"
@@ -29,12 +33,6 @@ if [ ! -d "./certbot/conf/live/$domain" ]; then
     -subj "/CN=localhost"
 fi
 
-echo "### Starting Nginx ..."
-docker-compose up -d nginx
-
-echo "### Deleting dummy certificate for $domain ..."
-rm -rf "./certbot/conf/live/$domain"
-
 echo "### Requesting Let's Encrypt certificate for $domain ..."
 
 # Select appropriate certbot command based on staging/prod
@@ -43,14 +41,21 @@ case $staging in
   0) staging_arg="";;
 esac
 
+# Get the certificate using standalone mode
 docker-compose run --rm certbot certonly \
   $staging_arg \
-  --webroot \
-  --webroot-path /var/www/certbot \
+  --standalone \
+  --preferred-challenges http \
   --email $email \
   --agree-tos \
   --no-eff-email \
   -d $domain
+
+echo "### Starting nginx ..."
+docker-compose up -d nginx
+
+echo "### Deleting dummy certificate for $domain ..."
+rm -rf "./certbot/conf/live/$domain"
 
 echo "### Reloading Nginx ..."
 docker-compose exec nginx nginx -s reload 
