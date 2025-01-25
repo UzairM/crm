@@ -8,6 +8,9 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
+# Install serve for production static file serving
+RUN npm install -g serve
+
 # Copy source code
 COPY . .
 
@@ -18,5 +21,5 @@ RUN npm run build
 ENV PORT=3000
 EXPOSE ${PORT}
 
-# Start the server
-CMD ["npm", "run", "start"] 
+# Start the production server
+CMD ["serve", "-s", "dist", "-l", "3000"] 
