@@ -7,6 +7,11 @@ yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
 .cursorrules
+
+# Azure credentials
+azure.ini
+azure.ini.tmp
+
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 

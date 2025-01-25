@@ -5,6 +5,18 @@ email="your-email@elphinstone.us"
 # Domain name
 domain="help.elphinstone.us"
 
+# Azure DNS Configuration
+export AZURE_TENANT_ID="your-tenant-id"
+export AZURE_CLIENT_ID="your-client-id"
+export AZURE_CLIENT_SECRET="your-client-secret"
+export AZURE_SUBSCRIPTION_ID="your-subscription-id"
+export AZURE_RESOURCE_GROUP="your-resource-group"
+export AZURE_DNS_ZONE="elphinstone.us"
+
+# Create Azure credentials file
+envsubst < azure.ini > azure.ini.tmp && mv azure.ini.tmp azure.ini
+chmod 600 azure.ini
+
 # Stop any running containers
 echo "### Stopping existing containers ..."
 docker-compose down
@@ -19,12 +31,12 @@ if [ ! -e "./certbot/conf/options-ssl-nginx.conf" ] || [ ! -e "./certbot/conf/ss
   curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot/certbot/ssl-dhparams.pem > "./certbot/conf/ssl-dhparams.pem"
 fi
 
-echo "### Starting Nginx ..."
-docker-compose up -d nginx
+echo "### Starting all services ..."
+docker-compose up -d
 
-# Wait for Nginx to start
-echo "### Waiting for Nginx to start ..."
-sleep 5
+# Wait for services to start
+echo "### Waiting for services to start ..."
+sleep 10
 
 echo "### Testing domain accessibility ..."
 if curl -s -o /dev/null "http://$domain/.well-known/acme-challenge/"; then
@@ -38,15 +50,22 @@ else
     exit 1
 fi
 
-echo "### Requesting Let's Encrypt certificate for $domain ..."
+echo "### Requesting Let's Encrypt certificate using Azure DNS for $domain ..."
 
-# Get the certificate
-docker-compose run --rm --entrypoint "\
-  certbot certonly --webroot -w /var/www/certbot \
+# Get the certificate using Azure DNS challenge
+docker-compose run --rm -v $PWD/azure.ini:/azure.ini:ro --entrypoint "\
+  pip install certbot-dns-azure && \
+  certbot certonly \
+    --dns-azure \
+    --dns-azure-credentials /azure.ini \
+    --dns-azure-propagation-seconds 30 \
     --email $email \
     --agree-tos \
     --no-eff-email \
     -d $domain" certbot
+
+# Clean up credentials
+rm -f azure.ini
 
 echo "### Reloading Nginx ..."
 docker-compose exec nginx nginx -s reload 
