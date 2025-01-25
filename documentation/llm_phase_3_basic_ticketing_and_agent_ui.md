@@ -10,9 +10,9 @@
 [x] BACKEND: Use an enum/string for status: ["New", "Open", "Closed", etc.].  
 [x] BACKEND: Create a "ticket_messages" table (id, ticket_id, sender, text, is_internal_note, created_at).  
 [x] BACKEND: Implement ticket endpoints (POST /tickets, GET /tickets, GET /tickets/:id, PATCH /tickets/:id, POST /tickets/:id/messages).  
-[ ] BACKEND: Restrict agents to see only assigned or unassigned tickets; managers see all.  
-[ ] BACKEND: For marking as read, consider a pivot table or simplified logic in MVP.  
-[ ] BACKEND: Manually test endpoints with Postman for CRUD. Confirm assigned agent sees assigned tickets.  
-[ ] BACKEND: Ensure internal notes are properly flagged.  
+[x] BACKEND: Restrict agents to see only assigned to them or unassigned tickets; managers see all.  
+[x] BACKEND: For marking as read, consider a pivot table or simplified logic in MVP.  
+[] BACKEND: Manually test endpoints with Postman for CRUD. Confirm assigned agent sees assigned tickets.  
+[x] BACKEND: Ensure internal notes are properly flagged.  
 [ ] FRONTEND: E2E test: login as Agent, view /tickets, open one, and add internal notes.  
 [ ] FRONTEND: Confirm read/unread transitions happen. 

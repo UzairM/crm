@@ -1,5 +1,5 @@
-import { Router, Request, Response, RequestHandler, NextFunction } from 'express'
-import { PrismaClient, Role, User, Prisma } from '@prisma/client'
+import { Router, Request, Response } from 'express'
+import { PrismaClient, Role, User } from '@prisma/client'
 import { z } from 'zod'
 import { validateRequest } from '../middleware/validateRequest'
 import { requireAuth, requireRole } from '../middleware/auth'
@@ -40,7 +40,7 @@ const createMessageSchema = z.object({
 })
 
 // Get all tickets (filtered by role)
-const getAllTickets = async (req: Request, res: Response): Promise<any> => {
+const getAllTickets = async (req: Request, res: Response): Promise<void> => {
   if (!req.user) {
     res.status(401).json({ message: 'Not authenticated' })
     return
@@ -105,7 +105,7 @@ const getAllTickets = async (req: Request, res: Response): Promise<any> => {
 }
 
 // Get a specific ticket
-const getTicket = async (req: Request, res: Response): Promise<any> => {
+const getTicket = async (req: Request, res: Response): Promise<void> => {
   if (!req.user) {
     res.status(401).json({ message: 'Not authenticated' })
     return
@@ -135,7 +135,8 @@ const getTicket = async (req: Request, res: Response): Promise<any> => {
     })
 
     if (!ticket) {
-      return res.status(404).json({ message: 'Ticket not found' })
+      res.status(404).json({ message: 'Ticket not found' })
+      return
     }
 
     // Check access based on role
@@ -143,7 +144,8 @@ const getTicket = async (req: Request, res: Response): Promise<any> => {
       req.user.role === Role.CLIENT && ticket.clientId !== req.user.id ||
       req.user.role === Role.AGENT && ticket.assignedAgentId !== req.user.id && ticket.assignedAgentId !== null
     ) {
-      return res.status(403).json({ message: 'Access denied' })
+      res.status(403).json({ message: 'Access denied' })
+      return 
     }
 
     res.json(ticket)
@@ -156,7 +158,7 @@ const getTicket = async (req: Request, res: Response): Promise<any> => {
 }
 
 // Create a new ticket
-const createTicket = async (req: Request, res: Response): Promise<any> => {
+const createTicket = async (req: Request, res: Response): Promise<void> => {
   if (!req.user) {
     res.status(401).json({ message: 'Not authenticated' })
     return
@@ -167,7 +169,8 @@ const createTicket = async (req: Request, res: Response): Promise<any> => {
 
     // Only managers can create tickets for any client
     if (req.user.role !== Role.MANAGER && clientId !== req.user.id) {
-      return res.status(403).json({ message: 'Can only create tickets for yourself' })
+       res.status(403).json({ message: 'Can only create tickets for yourself' })
+       return
     }
 
     const ticket = await prisma.ticket.create({
@@ -204,7 +207,7 @@ const createTicket = async (req: Request, res: Response): Promise<any> => {
 }
 
 // Update a ticket
-const updateTicket = async (req: Request, res: Response): Promise<any> => {
+const updateTicket = async (req: Request, res: Response): Promise<void> => {
   if (!req.user) {
     res.status(401).json({ message: 'Not authenticated' })
     return
@@ -219,21 +222,31 @@ const updateTicket = async (req: Request, res: Response): Promise<any> => {
     })
 
     if (!ticket) {
-      return res.status(404).json({ message: 'Ticket not found' })
+      res.status(404).json({ message: 'Ticket not found' })
+      return
     }
 
     // Only managers can reassign tickets
     if (assignedAgentId && req.user.role !== Role.MANAGER) {
-      return res.status(403).json({ message: 'Only managers can reassign tickets' })
+      res.status(403).json({ message: 'Only managers can reassign tickets' })
+      return
     }
 
-    // Only assigned agent or manager can update status
-    if (
+    // Allow clients to update status of their own tickets
+    if (status && req.user.role === Role.CLIENT) {
+      if (ticket.clientId !== req.user.id) {
+        res.status(403).json({ message: 'Can only update your own tickets' })
+        return
+      }
+    } 
+    // For agents, only assigned agent or manager can update status
+    else if (
       status &&
       req.user.role !== Role.MANAGER &&
       (req.user.role !== Role.AGENT || ticket.assignedAgentId !== req.user.id)
     ) {
-      return res.status(403).json({ message: 'Cannot update ticket status' })
+      res.status(403).json({ message: 'Cannot update ticket status' })
+      return
     }
 
     const updatedTicket = await prisma.ticket.update({
@@ -270,7 +283,7 @@ const updateTicket = async (req: Request, res: Response): Promise<any> => {
 }
 
 // Mark ticket as read
-const markTicketAsRead = async (req: Request, res: Response): Promise<any> => {
+const markTicketAsRead = async (req: Request, res: Response): Promise<void> => {
   if (!req.user) {
     res.status(401).json({ message: 'Not authenticated' })
     return
@@ -278,13 +291,15 @@ const markTicketAsRead = async (req: Request, res: Response): Promise<any> => {
 
   try {
     const { id } = req.params
+    const ticketId = parseInt(id)
 
     const ticket = await prisma.ticket.findUnique({
-      where: { id: parseInt(id) },
+      where: { id: ticketId },
     })
 
     if (!ticket) {
-      return res.status(404).json({ message: 'Ticket not found' })
+      res.status(404).json({ message: 'Ticket not found' })
+      return
     }
 
     // Check access based on role
@@ -292,11 +307,12 @@ const markTicketAsRead = async (req: Request, res: Response): Promise<any> => {
       req.user.role === Role.CLIENT && ticket.clientId !== req.user.id ||
       req.user.role === Role.AGENT && ticket.assignedAgentId !== req.user.id && ticket.assignedAgentId !== null
     ) {
-      return res.status(403).json({ message: 'Access denied' })
+      res.status(403).json({ message: 'Access denied' })
+      return
     }
 
     const updatedTicket = await prisma.ticket.update({
-      where: { id: parseInt(id) },
+      where: { id: ticketId },
       data: { isRead: true },
     })
 
@@ -310,7 +326,7 @@ const markTicketAsRead = async (req: Request, res: Response): Promise<any> => {
 }
 
 // Add a message to a ticket
-const createMessage = async (req: Request, res: Response): Promise<any> => {
+const createMessage = async (req: Request, res: Response): Promise<void> => {
   if (!req.user) {
     res.status(401).json({ message: 'Not authenticated' })
     return
@@ -325,7 +341,8 @@ const createMessage = async (req: Request, res: Response): Promise<any> => {
     })
 
     if (!ticket) {
-      return res.status(404).json({ message: 'Ticket not found' })
+      res.status(404).json({ message: 'Ticket not found' })
+      return
     }
 
     // Check access based on role
@@ -333,12 +350,14 @@ const createMessage = async (req: Request, res: Response): Promise<any> => {
       req.user.role === Role.CLIENT && ticket.clientId !== req.user.id ||
       req.user.role === Role.AGENT && ticket.assignedAgentId !== req.user.id && ticket.assignedAgentId !== null
     ) {
-      return res.status(403).json({ message: 'Access denied' })
+      res.status(403).json({ message: 'Access denied' })
+      return
     }
 
     // Only agents and managers can create internal notes
     if (isInternalNote && req.user.role === Role.CLIENT) {
-      return res.status(403).json({ message: 'Clients cannot create internal notes' })
+      res.status(403).json({ message: 'Clients cannot create internal notes' })
+      return
     }
 
     const message = await prisma.ticketMessage.create({
@@ -377,7 +396,7 @@ const createMessage = async (req: Request, res: Response): Promise<any> => {
 }
 
 // Get messages for a ticket
-const getMessages = async (req: Request, res: Response): Promise<any> => {
+const getMessages = async (req: Request, res: Response): Promise<void> => {
   if (!req.user) {
     res.status(401).json({ message: 'Not authenticated' })
     return
@@ -391,7 +410,8 @@ const getMessages = async (req: Request, res: Response): Promise<any> => {
     })
 
     if (!ticket) {
-      return res.status(404).json({ message: 'Ticket not found' })
+      res.status(404).json({ message: 'Ticket not found' })
+      return
     }
 
     // Check access based on role
@@ -399,7 +419,8 @@ const getMessages = async (req: Request, res: Response): Promise<any> => {
       req.user.role === Role.CLIENT && ticket.clientId !== req.user.id ||
       req.user.role === Role.AGENT && ticket.assignedAgentId !== req.user.id && ticket.assignedAgentId !== null
     ) {
-      return res.status(403).json({ message: 'Access denied' })
+      res.status(403).json({ message: 'Access denied' })
+      return
     }
 
     // Clients cannot see internal notes
@@ -436,12 +457,12 @@ const getMessages = async (req: Request, res: Response): Promise<any> => {
 }
 
 // Register routes
-router.get('/', requireAuth, getAllTickets as RequestHandler)
-router.get('/:id', requireAuth, getTicket as RequestHandler)
-router.post('/', requireAuth, validateRequest(createTicketSchema), requireRole([Role.MANAGER, Role.CLIENT]), createTicket as RequestHandler)
-router.patch('/:id', requireAuth, validateRequest(updateTicketSchema), requireRole([Role.MANAGER, Role.AGENT]), updateTicket as RequestHandler)
-router.patch('/:id/read', requireAuth, markTicketAsRead as RequestHandler)
-router.post('/:id/messages', requireAuth, validateRequest(createMessageSchema), createMessage as RequestHandler)
-router.get('/:id/messages', requireAuth, getMessages as RequestHandler)
+router.get('/', requireAuth, requireRole([Role.MANAGER, Role.AGENT, Role.CLIENT]), getAllTickets)
+router.get('/:id', requireAuth, requireRole([Role.MANAGER, Role.AGENT, Role.CLIENT]), getTicket)
+router.post('/', requireAuth, validateRequest(createTicketSchema), requireRole([Role.MANAGER, Role.CLIENT]), createTicket)
+router.patch('/:id', requireAuth, validateRequest(updateTicketSchema), requireRole([Role.MANAGER, Role.AGENT, Role.CLIENT]), updateTicket)
+router.patch('/:id/read', requireAuth, requireRole([Role.MANAGER, Role.AGENT]), markTicketAsRead)
+router.post('/:id/messages', requireAuth, validateRequest(createMessageSchema), requireRole([Role.MANAGER, Role.AGENT, Role.CLIENT]), createMessage)
+router.get('/:id/messages', requireAuth, requireRole([Role.MANAGER, Role.AGENT, Role.CLIENT]), getMessages)
 
 export default router 

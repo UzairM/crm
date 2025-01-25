@@ -1,21 +1,36 @@
-export type TicketStatus = 'New' | 'Open' | 'Closed'
+export type TicketStatus = 'NEW' | 'OPEN' | 'CLOSED'
 
 export interface Ticket {
-  id: string
+  id: number
   subject: string
   status: TicketStatus
-  assigned_agent_id: string | null
-  client_id: string
-  created_at: string
-  updated_at: string
-  is_read?: boolean
+  assignedAgentId: number | null
+  clientId: number
+  isRead: boolean
+  createdAt: string
+  updatedAt: string
+  client?: {
+    id: number
+    name: string
+    email: string
+  }
+  assignedAgent?: {
+    id: number
+    name: string
+    email: string
+  }
 }
 
 export interface TicketMessage {
-  id: string
-  ticket_id: string
-  sender: string
+  id: number
+  ticketId: number
+  senderId: number
   text: string
-  is_internal_note: boolean
-  created_at: string
+  isInternalNote: boolean
+  createdAt: string
+  sender: {
+    id: number
+    name: string
+    email: string
+  }
 } 

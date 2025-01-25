@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { api } from '../../lib/api'
+import { useAuthStore } from '../../stores/auth'
 
 interface MessageFormProps {
-  ticketId: string
+  ticketId: number
   onMessageSent: () => void
 }
 
@@ -11,6 +12,7 @@ export function MessageForm({ ticketId, onMessageSent }: MessageFormProps) {
   const [isInternalNote, setIsInternalNote] = useState(false)
   const [isSending, setIsSending] = useState(false)
   const [error, setError] = useState('')
+  const user = useAuthStore(state => state.user)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -20,9 +22,9 @@ export function MessageForm({ ticketId, onMessageSent }: MessageFormProps) {
     setError('')
 
     try {
-      await api.post(`/tickets/${ticketId}/messages`, {
+      await api.post(`/api/tickets/${ticketId}/messages`, {
         text: text.trim(),
-        is_internal_note: isInternalNote
+        isInternalNote: isInternalNote
       })
       setText('')
       onMessageSent()
@@ -47,16 +49,18 @@ export function MessageForm({ ticketId, onMessageSent }: MessageFormProps) {
       </div>
       
       <div className="flex items-center justify-between">
-        <label className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={isInternalNote}
-            onChange={(e) => setIsInternalNote(e.target.checked)}
-            className="rounded border-input text-primary focus:ring-ring"
-            disabled={isSending}
-          />
-          <span className="text-sm text-muted-foreground">Internal Note</span>
-        </label>
+        {user?.role !== 'CLIENT' && (
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={isInternalNote}
+              onChange={(e) => setIsInternalNote(e.target.checked)}
+              className="rounded border-input text-primary focus:ring-ring"
+              disabled={isSending}
+            />
+            <span className="text-sm text-muted-foreground">Internal Note</span>
+          </label>
+        )}
         
         <button
           type="submit"

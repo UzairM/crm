@@ -26,6 +26,11 @@ enum TicketStatus {
   CLOSED
 }
 
+enum ArticleStatus {
+  DRAFT
+  PUBLISHED
+}
+
 model User {
   id            Int      @id @default(autoincrement())
   oryIdentityId String   @unique
@@ -37,9 +42,10 @@ model User {
   updatedAt     DateTime @updatedAt
 
   // Relations
-  assignedTickets Ticket[]        @relation("AssignedTickets")
-  clientTickets   Ticket[]        @relation("ClientTickets")
-  messages        TicketMessage[]
+  assignedTickets   Ticket[]        @relation("AssignedTickets")
+  clientTickets     Ticket[]        @relation("ClientTickets")
+  messages          TicketMessage[]
+  knowledgeArticles KnowledgeArticle[]
 }
 
 // Test model to verify database connection
@@ -85,4 +91,18 @@ model TicketMessage {
   @@index([ticketId])
   @@index([senderId])
   @@index([isInternalNote])
+}
+
+model KnowledgeArticle {
+  id        Int           @id @default(autoincrement())
+  title     String
+  content   String        @db.Text
+  status    ArticleStatus @default(DRAFT)
+  authorId  Int
+  author    User         @relation(fields: [authorId], references: [id])
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@index([authorId])
+  @@index([status])
 }

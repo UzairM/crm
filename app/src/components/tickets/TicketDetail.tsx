@@ -6,57 +6,13 @@ import { LoadingSpinner } from '../LoadingSpinner'
 import { ErrorAlert } from '../ErrorAlert'
 import { MessageForm } from './MessageForm'
 import { Header } from '../Header'
-import { ArrowLeftIcon } from '@heroicons/react/24/solid'
+import { ArrowLeftIcon, XMarkIcon, CheckIcon } from '@heroicons/react/24/solid'
+import { useAuthStore } from '../../stores/auth'
 
 interface Client {
-  id: string
+  id: number
   name: string
   email: string
-}
-
-// Placeholder data for development
-const PLACEHOLDER_DATA = {
-  ticket: {
-    id: '1',
-    subject: 'Unable to access premium features',
-    status: 'Open' as const,
-    assigned_agent_id: 'agent_1',
-    client_id: 'client_1',
-    created_at: '2024-01-24T10:00:00Z',
-    updated_at: '2024-01-24T14:30:00Z',
-    is_read: false
-  },
-  messages: [
-    {
-      id: '1',
-      ticket_id: '1',
-      sender: 'John Doe',
-      text: 'Hi, I purchased the premium plan yesterday but still cannot access any of the premium features. Can you help?',
-      is_internal_note: false,
-      created_at: '2024-01-24T10:00:00Z'
-    },
-    {
-      id: '2',
-      ticket_id: '1',
-      sender: 'Support Agent',
-      text: 'Let me check the payment status and account permissions.',
-      is_internal_note: true,
-      created_at: '2024-01-24T10:15:00Z'
-    },
-    {
-      id: '3',
-      ticket_id: '1',
-      sender: 'Support Agent',
-      text: "I can see your payment was successful. There seems to be a delay in permission propagation. I'll fix this right away.",
-      is_internal_note: false,
-      created_at: '2024-01-24T10:20:00Z'
-    }
-  ],
-  client: {
-    id: 'client_1',
-    name: 'John Doe',
-    email: 'john.doe@example.com'
-  }
 }
 
 export function TicketDetail() {
@@ -66,43 +22,34 @@ export function TicketDetail() {
   const [client, setClient] = useState<Client | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
+  const user = useAuthStore(state => state.user)
 
   const fetchTicketData = useCallback(async () => {
     try {
-      // Use placeholder data for development
-      if (process.env.NODE_ENV === 'development') {
-        setTimeout(() => {
-          const ticket = { ...PLACEHOLDER_DATA.ticket }
-          if (!ticket.is_read) {
-            ticket.is_read = true
-            // Also update the placeholder data for future loads
-            PLACEHOLDER_DATA.ticket.is_read = true
-          }
-          setTicket(ticket)
-          setMessages(PLACEHOLDER_DATA.messages)
-          setClient(PLACEHOLDER_DATA.client)
-          setIsLoading(false)
-        }, 500) // Simulate loading
-        return
-      }
-
       const [ticketResponse, messagesResponse] = await Promise.all([
-        api.get(`/tickets/${ticketId}`),
-        api.get(`/tickets/${ticketId}/messages`)
+        api.get(`/api/tickets/${ticketId}`),
+        api.get(`/api/tickets/${ticketId}/messages`)
       ])
+      
+      // Mark ticket as read only if user is not a CLIENT
+      if (!ticketResponse.data.isRead && user?.role !== 'CLIENT') {
+        await api.patch(`/api/tickets/${ticketId}/read`)
+        // Update ticket status to OPEN when marked as read
+        if (ticketResponse.data.status === 'NEW') {
+          await api.patch(`/api/tickets/${ticketId}`, { status: 'OPEN' })
+          ticketResponse.data.status = 'OPEN'
+        }
+        // Update the isRead status in the local ticket data
+        ticketResponse.data.isRead = true
+      }
       
       setTicket(ticketResponse.data)
       setMessages(messagesResponse.data)
       
       // Fetch client info if we have a ticket
-      if (ticketResponse.data.client_id) {
-        const clientResponse = await api.get(`/clients/${ticketResponse.data.client_id}`)
+      if (ticketResponse.data.clientId) {
+        const clientResponse = await api.get(`/api/users/${ticketResponse.data.clientId}`)
         setClient(clientResponse.data)
-      }
-
-      // Mark ticket as read
-      if (!ticketResponse.data.is_read) {
-        await api.patch(`/tickets/${ticketId}/read`)
       }
     } catch (err) {
       setError('Failed to load ticket details')
@@ -110,15 +57,27 @@ export function TicketDetail() {
     } finally {
       setIsLoading(false)
     }
-  }, [ticketId])
+  }, [ticketId, user?.role])
 
   useEffect(() => {
     fetchTicketData()
   }, [fetchTicketData])
 
+  const toggleTicketStatus = async () => {
+    if (!ticket) return
+    try {
+      const newStatus = ticket.status === 'OPEN' ? 'CLOSED' : 'OPEN'
+      await api.patch(`/api/tickets/${ticketId}`, { status: newStatus })
+      setTicket(prev => prev ? { ...prev, status: newStatus } : null)
+    } catch (err) {
+      setError('Failed to update ticket status')
+      console.error(err)
+    }
+  }
+
   if (isLoading) return <LoadingSpinner />
   if (error) return <ErrorAlert message={error} />
-  if (!ticket) return <ErrorAlert message="Ticket not found" />
+  if (!ticket) return <LoadingSpinner />
 
   return (
     <div className="min-h-screen bg-background">
@@ -140,13 +99,37 @@ export function TicketDetail() {
               <h1 className="text-2xl font-bold mb-2 text-foreground">
                 {ticket.subject}
               </h1>
-              <span className={`px-2 py-1 rounded-md text-sm font-medium
-                ${ticket.status === 'New' ? 'bg-blue-100 text-blue-900 dark:bg-blue-900 dark:text-blue-100' : ''}
-                ${ticket.status === 'Open' ? 'bg-teal-100 text-teal-900 dark:bg-teal-900 dark:text-teal-100' : ''}
-                ${ticket.status === 'Closed' ? 'bg-muted text-muted-foreground' : ''}`}
-              >
-                {ticket.status}
-              </span>
+              <div>
+                <span className={`px-2 py-1 rounded-md text-sm font-medium
+                  ${!ticket.isRead ? 'bg-primary text-primary-foreground' : 
+                    ticket.status === 'NEW' ? 'bg-blue-100 text-blue-900 dark:bg-blue-900 dark:text-blue-100' :
+                    ticket.status === 'OPEN' ? 'bg-teal-100 text-teal-900 dark:bg-teal-900 dark:text-teal-100' :
+                    'bg-muted text-muted-foreground'}`}
+                >
+                  {!ticket.isRead ? 'UNREAD' : ticket.status}
+                </span>
+                {ticket.status !== 'NEW' && (
+                  <button
+                    onClick={toggleTicketStatus}
+                    className={`block mt-2 inline-flex items-center px-2 py-1 rounded-md text-sm font-medium transition-colors
+                      ${ticket.status === 'OPEN' 
+                        ? 'bg-muted hover:bg-muted/90 text-muted-foreground' 
+                        : 'bg-teal-100 hover:bg-teal-200 text-teal-900 dark:bg-teal-900 dark:hover:bg-teal-800 dark:text-teal-100'}`}
+                  >
+                    {ticket.status === 'OPEN' ? (
+                      <>
+                        <XMarkIcon className="w-4 h-4 mr-1" />
+                        Close Ticket
+                      </>
+                    ) : (
+                      <>
+                        <CheckIcon className="w-4 h-4 mr-1" />
+                        Reopen Ticket
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
             </div>
             {client && (
               <div className="bg-card p-4 rounded-lg border border-border">
@@ -159,23 +142,36 @@ export function TicketDetail() {
         </div>
 
         <div className="space-y-4">
-          {messages.map((message) => (
+          {messages
+            .filter(message => !message.isInternalNote || user?.role !== 'CLIENT')
+            .map((message) => (
             <div 
               key={message.id}
               className={`p-4 rounded-lg ${
-                message.is_internal_note 
+                message.isInternalNote 
                   ? 'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800'
                   : 'bg-card border border-border'
               }`}
             >
               <div className="flex justify-between mb-2">
-                <span className="font-medium text-foreground">{message.sender}</span>
+                <span className="font-medium text-foreground">
+                  {message.sender.name ? (
+                    <>
+                      {message.sender.name}
+                      <span className="ml-2 text-sm text-muted-foreground">
+                        ({message.sender.email})
+                      </span>
+                    </>
+                  ) : (
+                    message.sender.email
+                  )}
+                </span>
                 <span className="text-sm text-muted-foreground">
-                  {new Date(message.created_at).toLocaleString()}
+                  {new Date(message.createdAt).toLocaleString()}
                 </span>
               </div>
               <p className="whitespace-pre-wrap text-foreground">{message.text}</p>
-              {message.is_internal_note && (
+              {message.isInternalNote && user?.role !== 'CLIENT' && (
                 <div className="mt-2 text-xs text-yellow-600 dark:text-yellow-400 font-medium">
                   Internal Note
                 </div>

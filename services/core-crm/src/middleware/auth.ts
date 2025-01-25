@@ -1,5 +1,14 @@
 import { Configuration, FrontendApi } from '@ory/client'
-import { PrismaClient, Role } from '@prisma/client'
+import { PrismaClient, Role, User } from '@prisma/client'
+import { Request, Response, NextFunction } from 'express'
+
+// Extend Express Request type
+declare module 'express' {
+  interface Request {
+    user?: User
+    session?: any
+  }
+}
 
 const prisma = new PrismaClient()
 
@@ -13,7 +22,7 @@ const ory = new FrontendApi(
   })
 )
 
-export async function requireAuth(req: any, res: any, next: any) {
+export async function requireAuth(req: Request, res: Response, next: NextFunction) {
   try {
     // For tests: if x-mock-user header exists, parse it
     if (process.env.NODE_ENV === 'test' && req.headers['x-mock-user']) {
@@ -74,7 +83,7 @@ export async function requireAuth(req: any, res: any, next: any) {
 
 // Middleware to check role authorization
 export function requireRole(allowedRoles: Role[]) {
-  return async (req: any, res: any, next: any) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const user = req.user
 

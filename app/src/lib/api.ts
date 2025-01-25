@@ -11,18 +11,19 @@ export const api = axios.create({
   }
 })
 
-export async function getMe(): Promise<User> {
-  const response = await fetch(`${BASE_URL}/api/users/me`, {
-    credentials: 'include',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
+// Add response interceptor for error handling
+api.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response?.status === 401) {
+      // Redirect to login if unauthorized
+      window.location.href = '/login'
     }
-  })
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch user data')
+    return Promise.reject(error)
   }
+)
 
-  return response.json()
+export async function getMe(): Promise<User> {
+  const response = await api.get('/api/users/me')
+  return response.data
 } 

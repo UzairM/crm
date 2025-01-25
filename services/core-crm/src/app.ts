@@ -19,6 +19,6 @@ app.use(json())
 // Routes
 app.use('/', healthRoutes)
 app.use('/api/users', usersRouter)
-app.use('/tickets', ticketsRouter)
+app.use('/api/tickets', ticketsRouter)
 
 export default app 

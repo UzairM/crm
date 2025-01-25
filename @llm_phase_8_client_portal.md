@@ -1,0 +1,1 @@
+[x] Allow clients to update their own tickets (open/close) 
