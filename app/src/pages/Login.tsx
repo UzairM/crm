@@ -53,7 +53,9 @@ export default function Login() {
       const password = formData.get('password') as string
 
       // First get a login flow
-      const { data: flow } = await ory.createBrowserLoginFlow()
+      const { data: flow } = await ory.createBrowserLoginFlow({
+        refresh: true
+      })
 
       // Find the CSRF token
       const csrfNode = flow.ui.nodes.find(
