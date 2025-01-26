@@ -15,7 +15,7 @@ const prisma = new PrismaClient()
 // Initialize ORY SDK
 const ory = new FrontendApi(
   new Configuration({
-    basePath: process.env.ORY_BASE_URL || 'http://localhost:4000',
+    basePath: process.env.ORY_SDK_URL || 'http://localhost:4000',
     baseOptions: {
       withCredentials: true
     }
