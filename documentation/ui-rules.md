@@ -1,81 +1,65 @@
 # UI Rules & Guidelines
 
-This document describes the core principles for building a modern, responsive, and animated user interface for the Finance CRM MVP. It takes into account the user stories in User_stories, the MVP features from mvp_features.md, and the system architecture outlined in high_level_overview.md.
+This document details the UI principles drawn from @User_stories.md, @high_level_overview.md, and @tech-stack-rules.md. It emphasizes a primarily minimalist aesthetic with gentle neumorphism elements, ensuring a user-friendly, responsive interface for Agents, Managers, and Clients working long hours.
 
 ---
 
-## 1. Component Architecture & Code Organization
+## 1. Responsiveness & Accessibility
 
-1.1 Modular Components  
-• Each UI element (e.g., ticket card, client profile, role assignment form) should exist in its own folder or file for clarity and reusability.  
-• Maintain separate folders for common components (buttons, form inputs, modals) versus feature-specific components (ticket lists, dashboards).
-
-1.2 State Management & Data Flow  
-• Rely on Remix's loader/action system whenever possible for server-side data fetching.  
-• For more complex or shared state (e.g., user session, unread ticket counts), use a global state mechanism (React Context or an external library if needed).  
-
-1.3 Integration with the Backend (Express, AI Service)  
-• Each component that needs data from the Core CRM or AI service uses React Query/SWR hooks; these talk to the backend APIs.  
-• Maintain consistent naming and data contracts. A "TicketList" component, for example, should expect an array of ticket objects with fields that match the Express API response.  
+• Adopt a mobile-first approach for all components, with clear breakpoints (e.g., 576px, 768px, 992px).  
+• Ensure high color contrast between text and backgrounds for readability (WCAG AA).  
+• Provide keyboard-focus states, aria-labels, and skip links where appropriate.  
+• Automatize layout tests across screen sizes and device orientations before release.
 
 ---
 
-## 2. Responsiveness & Accessibility
+## 2. Component Architecture
 
-2.1 Responsive Layout  
-• Use a mobile-first approach to ensure the entire interface (including dashboards, multi-column layouts) scales well on phones, tablets, and desktops.  
-• Follow standard breakpoints (e.g., 576px, 768px, 992px, 1200px), adjusting them as needed for your user base.
+• Keep components small and distinct: TicketCard, ClientProfilePanel, ManagerDashboard, etc.  
+• Store layout components (e.g., PageLayout, NavigationSidebar) separately from data-display components.  
 
-2.2 Accessibility Standards  
-• All interactive elements (buttons, links) must have keyboard focus states and descriptive ARIA labels if not obvious from context.  
-• Maintain high color contrast for text (WCAG AA minimum).  
-• Provide alt text for icons/graphics, especially if they convey important data (e.g., graph icons, currency symbols, or alert banners).
-
-2.3 Animations & Performance  
-• Use lightweight, CSS-based animations or small React libraries (e.g., Framer Motion) for transitions.  
-• Avoid overwhelming users with too many animated elements. Subtle transitions in modals or dropdowns can enhance user focus without distraction.  
 
 ---
 
-## 3. Interaction & Navigation
+## 3. Interaction & Animations
 
-3.1 Navigation Structure  
-• Primary navigation includes sections relevant to user roles: Dashboard, Tickets, Clients, Manager Tools (e.g., SLA, Bulk Email), and a Client Portal if logged in as a client.  
-• Use clear, consistent naming. For example, the "Manager Dashboard" should be labeled as such (versus a generic "Admin").
-
-3.2 Quick Access & Searching  
-• Provide search bars or filters in key areas—ticket lists, client database, etc.—to align with user stories where Agents need quick scanning of tickets or Managers need segmentation for marketing.  
-• Allow advanced filters (region, net worth, risk category) in the client database per user story 2.2.
-
-3.3 Error Handling & Validation  
-• Show user-friendly messages when a form submission fails (e.g., invalid email, missing required fields).  
-• For background job errors (e.g., AI request failures), display a notification toast or alert, so Agents and Managers can retry if needed.
+• Subtle hover states: highlight buttons, cards, or icons with a slight neumorphic lift.  
+• Use minimal transitions (0.2s–0.3s) for focus states, modals, or dropdown expansions.  
+• Keep skeleton-loading or progress spinners for data fetches quick and uncluttered.  
+• Animate form feedback (validations, errors) with gentle movement or color shifts.
 
 ---
 
-## 4. Building for Clarity & Trustworthiness
+## 4. Navigation & Role-Specific Flows
 
-4.1 Data-Intensive Views  
-• For ticket queues, dashboards, or large data tables, ensure sorting, pagination, or infinite scrolling is available.  
-• Visual cues (e.g. flags for high-priority tickets near SLA breach) should stand out clearly.
-
-4.2 Security Privacy Indicators  
-• If certain data (like PST or email ingestion) is restricted to Agents/Managers, display locked icons or restricted states for unauthorized roles.  
-• Include small disclaimers or info icons for any partial or incomplete AI data to manage user expectations.
-
-4.3 Consistency in Layout & Components  
-• The same "Ticket Card" layout should appear in all contexts (agent dashboard, manager dashboards, etc.), ensuring users intuitively recognize ticket details.  
-• Keep form styles and button styles consistent across the entire app.
+• Agents see a "Ticket Dashboard" by default; Managers see additional "Manager Tools" tabs.  
+• Clients see a "My Tickets" section with restricted data.  
+• Provide direct links to relevant tickets (unread, nearing SLA) so users can quickly respond.
 
 ---
 
-## 5. Future Considerations
+## 5. Ties with Backend & Services
 
-• Expand integration with specialized motion design if the user base welcomes more interactive experiences (e.g., advanced infographics for manager dashboards).  
-• As the AI features grow (auto-generated FAQ, knowledge base expansions), consider specialized UIs for reviewing and curating AI-generated content.  
+• Integrate with the Node CRM using well-named fetch calls or React Query hooks.  
+• For AI suggestions, ensure a loading spinner or partial skeleton while waiting on the Python service.  
+• Validate user roles with the local role from the CRM before exposing restricted components (e.g., SLA config).
 
 ---
 
-## Conclusion
+## 6. Error States & Feedback
 
-These UI rules ensure the Finance CRM remains modern, responsive, and user-friendly. By leveraging React's structure, focusing on accessibility, and tying into the Express + AI backend consistently, the user experience will be seamless for Agents, Managers, and Clients alike—all while retaining the professionalism required in the finance sector. 
+• Display user-friendly messages on API failure, referencing the channel or action.  
+• For Manager-only endpoints (e.g., role assignment), show an appropriate "Unauthorized" message if an Agent attempts access.  
+• Keep logs minimal in production; do not expose server stack traces.
+
+---
+
+## 7. Testing & Q/A
+
+• Test all flow-based user stories (login → ticket creation → resolution).  
+• Include aXe or Lighthouse scans for accessibility checks.  
+• Run UI snapshot tests to confirm minimal visual regressions, especially with neumorphic shadows.
+
+---
+
+By following these UI rules—covering responsiveness, accessibility, minimal but consistent interactions, and smooth ties to the backend—we build a clear, comfortable environment for extended daily use. 

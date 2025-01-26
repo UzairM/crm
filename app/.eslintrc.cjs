@@ -53,6 +53,15 @@ module.exports = {
           { name: "Link", linkAttribute: "to" },
           { name: "NavLink", linkAttribute: "to" },
         ],
+        "import/resolver": {
+          typescript: {
+            alwaysTryTypes: true,
+            project: "./tsconfig.json"
+          },
+          node: {
+            extensions: [".js", ".jsx", ".ts", ".tsx"]
+          }
+        }
       },
       rules: {
         "jsx-a11y/heading-has-content": "off" // Disable this rule as we're using forwardRef
@@ -83,6 +92,9 @@ module.exports = {
         "plugin:import/recommended",
         "plugin:import/typescript",
       ],
+      rules: {
+        "import/no-unresolved": "error"
+      }
     },
 
     // Node

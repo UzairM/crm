@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { Ticket, TicketStatus } from '../../types/ticket'
-import { api } from '../../lib/api'
-import { LoadingSpinner } from '../LoadingSpinner'
-import { ErrorAlert } from '../ErrorAlert'
+import { Ticket, TicketStatus } from '@/types/ticket'
+import { api } from '@/lib/api'
+import { LoadingSpinner } from '@/components/LoadingSpinner'
+import { ErrorAlert } from '@/components/ErrorAlert'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 
 export function TicketList() {
   const [tickets, setTickets] = useState<Ticket[]>([])
@@ -61,52 +65,61 @@ export function TicketList() {
         <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
           Tickets
         </h1>
-        <div className="flex gap-4">
-          <select
+        <div className="flex gap-4 items-center">
+          <Select
             value={currentStatus || ''}
-            onChange={(e) => handleFilterChange(e.target.value as TicketStatus | '', currentUnread)}
-            className="rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            onValueChange={(value) => handleFilterChange(value as TicketStatus | '', currentUnread)}
           >
-            <option value="">All Tickets</option>
-            <option value="OPEN">Open</option>
-            <option value="CLOSED">Closed</option>
-          </select>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="All Tickets" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">All Tickets</SelectItem>
+              <SelectItem value="OPEN">Open</SelectItem>
+              <SelectItem value="CLOSED">Closed</SelectItem>
+            </SelectContent>
+          </Select>
+          
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="unread"
               checked={currentUnread}
-              onChange={(e) => handleFilterChange(currentStatus || '', e.target.checked)}
-              className="rounded border-input text-primary focus:ring-ring"
+              onCheckedChange={(checked) => handleFilterChange(currentStatus || '', checked as boolean)}
             />
-            <span className="text-sm text-muted-foreground">Unread Only</span>
-          </label>
+            <label
+              htmlFor="unread"
+              className="text-sm text-muted-foreground leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Unread Only
+            </label>
+          </div>
         </div>
       </div>
 
       {tickets.map((ticket) => (
-        <button
+        <Card
           key={ticket.id}
+          className={`${!ticket.isRead ? 'border-l-4 border-l-primary' : ''} cursor-pointer`}
           onClick={() => navigate(`/tickets/${ticket.id}`)}
-          className={`w-full text-left p-4 rounded-lg shadow-sm border transition-colors
-            ${!ticket.isRead ? 'border-l-4 border-primary' : 'border-border'}
-            bg-card hover:bg-card/80`}
         >
-          <div className="flex justify-between items-start">
-            <h3 className="font-semibold text-lg text-foreground">{ticket.subject}</h3>
-            <span className={`px-2 py-1 rounded-md text-sm font-medium
-              ${!ticket.isRead ? 'bg-primary text-primary-foreground' : 
-                ticket.status === 'NEW' ? 'bg-blue-100 text-blue-900 dark:bg-blue-900 dark:text-blue-100' :
-                ticket.status === 'OPEN' ? 'bg-teal-100 text-teal-900 dark:bg-teal-900 dark:text-teal-100' :
-                'bg-muted text-muted-foreground'}`}
-            >
-              {!ticket.isRead ? 'UNREAD' : ticket.status}
-            </span>
-          </div>
-          <div className="mt-2 text-sm text-muted-foreground">
-            Created: {new Date(ticket.createdAt).toLocaleDateString()}
-            {ticket.client && ` • ${ticket.client.email}`}
-          </div>
-        </button>
+          <CardContent className="p-4">
+            <div className="flex justify-between items-start">
+              <h3 className="font-semibold text-lg text-foreground">{ticket.subject}</h3>
+              <Badge variant={
+                !ticket.isRead ? 'default' :
+                ticket.status === 'NEW' ? 'secondary' :
+                ticket.status === 'OPEN' ? 'outline' :
+                'default'
+              }>
+                {!ticket.isRead ? 'UNREAD' : ticket.status}
+              </Badge>
+            </div>
+            <div className="mt-2 text-sm text-muted-foreground">
+              Created: {new Date(ticket.createdAt).toLocaleDateString()}
+              {ticket.client && ` • ${ticket.client.email}`}
+            </div>
+          </CardContent>
+        </Card>
       ))}
       {tickets.length === 0 && (
         <div className="text-center text-muted-foreground py-8">
@@ -115,4 +128,4 @@ export function TicketList() {
       )}
     </div>
   )
-} 
+}

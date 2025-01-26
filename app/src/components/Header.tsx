@@ -1,9 +1,9 @@
-import { useAuthStore } from '../stores/auth'
-import { useHydrated } from '../hooks/useHydrated'
-import { ory } from '../lib/ory'
-import { Button } from "./ui/button"
-import { Avatar, AvatarFallback } from "./ui/avatar"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
+import { useAuthStore } from '@/stores/auth'
+import { useHydrated } from '@/hooks/useHydrated'
+import { ory } from '@/lib/ory'
+import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { LogOut, User } from "lucide-react"
 import { Link } from "react-router-dom"
 

@@ -1,6 +1,10 @@
 import { useState } from 'react'
-import { api } from '../../lib/api'
-import { useAuthStore } from '../../stores/auth'
+import { api } from '@/lib/api'
+import { useAuthStore } from '@/stores/auth'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
 
 interface MessageFormProps {
   ticketId: number
@@ -39,43 +43,40 @@ export function MessageForm({ ticketId, onMessageSent }: MessageFormProps) {
   return (
     <form onSubmit={handleSubmit} className="mt-6 bg-card rounded-lg shadow p-4 border border-border">
       <div className="mb-4">
-        <textarea
+        <Textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder={isInternalNote ? "Add an internal note..." : "Type your reply..."}
-          className="w-full min-h-[100px] p-3 rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+          className="min-h-[100px]"
           disabled={isSending}
         />
       </div>
       
       <div className="flex items-center justify-between">
         {user?.role !== 'CLIENT' && (
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="internal-note"
               checked={isInternalNote}
-              onChange={(e) => setIsInternalNote(e.target.checked)}
-              className="rounded border-input text-primary focus:ring-ring"
+              onCheckedChange={(checked) => setIsInternalNote(checked as boolean)}
               disabled={isSending}
             />
-            <span className="text-sm text-muted-foreground">Internal Note</span>
-          </label>
+            <Label
+              htmlFor="internal-note"
+              className="text-sm text-muted-foreground"
+            >
+              Internal Note
+            </Label>
+          </div>
         )}
         
-        <button
+        <Button
           type="submit"
           disabled={isSending || !text.trim()}
-          className={`px-4 py-2 rounded-md text-sm font-medium
-            ${isSending || !text.trim()
-              ? 'bg-muted text-muted-foreground cursor-not-allowed'
-              : isInternalNote
-                ? 'bg-yellow-600 hover:bg-yellow-700 text-white'
-                : 'bg-primary hover:bg-primary/90 text-primary-foreground'
-            }
-          `}
+          variant={isInternalNote ? "secondary" : "default"}
         >
           {isSending ? 'Sending...' : isInternalNote ? 'Add Note' : 'Send Reply'}
-        </button>
+        </Button>
       </div>
       
       {error && (

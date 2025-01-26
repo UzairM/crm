@@ -1,13 +1,16 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { Ticket, TicketMessage } from '../../types/ticket'
-import { api } from '../../lib/api'
-import { LoadingSpinner } from '../LoadingSpinner'
-import { ErrorAlert } from '../ErrorAlert'
+import { Ticket, TicketMessage } from '@/types/ticket'
+import { api } from '@/lib/api'
+import { LoadingSpinner } from '@/components/LoadingSpinner'
+import { ErrorAlert } from '@/components/ErrorAlert'
 import { MessageForm } from './MessageForm'
-import { Header } from '../Header'
-import { ArrowLeftIcon, XMarkIcon, CheckIcon } from '@heroicons/react/24/solid'
-import { useAuthStore } from '../../stores/auth'
+import { Header } from '@/components/Header'
+import { ArrowLeft, X, Check } from 'lucide-react'
+import { useAuthStore } from '@/stores/auth'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 
 interface Client {
   id: number
@@ -84,13 +87,12 @@ export function TicketDetail() {
       <Header />
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="mb-6">
-          <Link 
-            to="/tickets" 
-            className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeftIcon className="w-5 h-5 mr-2" />
-            Back to Tickets
-          </Link>
+          <Button variant="ghost" asChild>
+            <Link to="/tickets" className="inline-flex items-center gap-2">
+              <ArrowLeft className="h-4 w-4" />
+              Back to Tickets
+            </Link>
+          </Button>
         </div>
 
         <div className="mb-8">
@@ -99,44 +101,47 @@ export function TicketDetail() {
               <h1 className="text-2xl font-bold mb-2 text-foreground">
                 {ticket.subject}
               </h1>
-              <div>
-                <span className={`px-2 py-1 rounded-md text-sm font-medium
-                  ${!ticket.isRead ? 'bg-primary text-primary-foreground' : 
-                    ticket.status === 'NEW' ? 'bg-blue-100 text-blue-900 dark:bg-blue-900 dark:text-blue-100' :
-                    ticket.status === 'OPEN' ? 'bg-teal-100 text-teal-900 dark:bg-teal-900 dark:text-teal-100' :
-                    'bg-muted text-muted-foreground'}`}
-                >
+              <div className="space-y-2">
+                <Badge variant={
+                  !ticket.isRead ? 'default' :
+                  ticket.status === 'NEW' ? 'secondary' :
+                  ticket.status === 'OPEN' ? 'outline' :
+                  'default'
+                }>
                   {!ticket.isRead ? 'UNREAD' : ticket.status}
-                </span>
+                </Badge>
                 {ticket.status !== 'NEW' && (
-                  <button
+                  <Button
                     onClick={toggleTicketStatus}
-                    className={`block mt-2 inline-flex items-center px-2 py-1 rounded-md text-sm font-medium transition-colors
-                      ${ticket.status === 'OPEN' 
-                        ? 'bg-muted hover:bg-muted/90 text-muted-foreground' 
-                        : 'bg-teal-100 hover:bg-teal-200 text-teal-900 dark:bg-teal-900 dark:hover:bg-teal-800 dark:text-teal-100'}`}
+                    variant={ticket.status === 'OPEN' ? 'destructive' : 'default'}
+                    size="sm"
+                    className="ml-2"
                   >
                     {ticket.status === 'OPEN' ? (
                       <>
-                        <XMarkIcon className="w-4 h-4 mr-1" />
+                        <X className="h-4 w-4 mr-1" />
                         Close Ticket
                       </>
                     ) : (
                       <>
-                        <CheckIcon className="w-4 h-4 mr-1" />
+                        <Check className="h-4 w-4 mr-1" />
                         Reopen Ticket
                       </>
                     )}
-                  </button>
+                  </Button>
                 )}
               </div>
             </div>
             {client && (
-              <div className="bg-card p-4 rounded-lg border border-border">
-                <h3 className="font-semibold mb-2 text-foreground">Client Information</h3>
-                <p className="text-sm text-muted-foreground">{client.name}</p>
-                <p className="text-sm text-muted-foreground">{client.email}</p>
-              </div>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Client Information</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">{client.name}</p>
+                  <p className="text-sm text-muted-foreground">{client.email}</p>
+                </CardContent>
+              </Card>
             )}
           </div>
         </div>
@@ -145,39 +150,37 @@ export function TicketDetail() {
           {messages
             .filter(message => !message.isInternalNote || user?.role !== 'CLIENT')
             .map((message) => (
-            <div 
-              key={message.id}
-              className={`p-4 rounded-lg ${
-                message.isInternalNote 
-                  ? 'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800'
-                  : 'bg-card border border-border'
-              }`}
-            >
-              <div className="flex justify-between mb-2">
-                <span className="font-medium text-foreground">
-                  {message.sender.name ? (
-                    <>
-                      {message.sender.name}
-                      <span className="ml-2 text-sm text-muted-foreground">
-                        ({message.sender.email})
-                      </span>
-                    </>
-                  ) : (
-                    message.sender.email
+              <Card
+                key={message.id}
+                className={message.isInternalNote ? 'border-yellow-200 dark:border-yellow-800 bg-yellow-50/50 dark:bg-yellow-900/20' : ''}
+              >
+                <CardContent className="p-4">
+                  <div className="flex justify-between mb-2">
+                    <span className="font-medium text-foreground">
+                      {message.sender.name ? (
+                        <>
+                          {message.sender.name}
+                          <span className="ml-2 text-sm text-muted-foreground">
+                            ({message.sender.email})
+                          </span>
+                        </>
+                      ) : (
+                        message.sender.email
+                      )}
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      {new Date(message.createdAt).toLocaleString()}
+                    </span>
+                  </div>
+                  <p className="whitespace-pre-wrap text-foreground">{message.text}</p>
+                  {message.isInternalNote && user?.role !== 'CLIENT' && (
+                    <Badge variant="outline" className="mt-2 bg-yellow-100/50 text-yellow-700 dark:bg-yellow-900/50 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800">
+                      Internal Note
+                    </Badge>
                   )}
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  {new Date(message.createdAt).toLocaleString()}
-                </span>
-              </div>
-              <p className="whitespace-pre-wrap text-foreground">{message.text}</p>
-              {message.isInternalNote && user?.role !== 'CLIENT' && (
-                <div className="mt-2 text-xs text-yellow-600 dark:text-yellow-400 font-medium">
-                  Internal Note
-                </div>
-              )}
-            </div>
-          ))}
+                </CardContent>
+              </Card>
+            ))}
         </div>
 
         <div className="mt-6">
