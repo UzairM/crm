@@ -14,7 +14,7 @@ RUN npm install -g serve
 # Copy source code
 COPY . .
 
-# Set environment variables for Docker services
+# Set environment variables for build time
 ENV VITE_API_URL=https://help.elphinstone.us:2000
 ENV VITE_CORE_CRM_URL=https://help.elphinstone.us:2000
 ENV VITE_AI_SERVICE_URL=http://ai-service:8000
@@ -23,7 +23,7 @@ ENV VITE_ORY_SDK_URL=https://auth.elphinstone.us
 # Build the app
 RUN npm run build
 
-# Expose port
+# Set environment variables for runtime (these will be used by the static server)
 ENV PORT=3000
 EXPOSE ${PORT}
 

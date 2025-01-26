@@ -44,7 +44,7 @@ services:
       - DATABASE_URL=postgresql://${POSTGRES_USER:-admin}:${POSTGRES_PASSWORD:-admin123}@postgres:5432/${POSTGRES_DB:-crm_db}
       - PORT=${CORE_CRM_PORT:-3001}
       - NODE_ENV=${NODE_ENV:-development}
-      - ORY_SDK_URL=${ORY_SDK_URL:-https://auth.elphinstone.us}
+      - ORY_SDK_URL=https://auth.elphinstone.us
       - AI_SERVICE_URL=http://ai-service:8000
       - JWT_SECRET=${JWT_SECRET:-your-secret-key}
       - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-24h}

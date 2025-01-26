@@ -27,6 +27,16 @@ RUN npm run build
 # Default port
 ENV PORT=3001
 
+# Set environment variables for build and runtime
+ENV NODE_ENV=production
+ENV ORY_SDK_URL=https://auth.elphinstone.us
+ENV AI_SERVICE_URL=http://ai-service:8000
+ENV JWT_SECRET=your-secret-key
+ENV JWT_EXPIRES_IN=24h
+ENV FRONTEND_URL=https://help.elphinstone.us
+ENV ALLOWED_ORIGINS=https://help.elphinstone.us
+ENV DATABASE_URL=postgresql://admin:admin123@postgres:5432/crm_db
+
 # Expose port (use ENV variable)
 EXPOSE ${PORT}
 
