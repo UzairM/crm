@@ -40,7 +40,7 @@ export function TicketList() {
       const unread = searchParams.get('unread')
       
       const params = new URLSearchParams()
-      if (status && status !== 'all') params.append('status', status)
+      if (status) params.append('status', status)
       if (unread === 'true') params.append('unread', 'true')
       
       console.log('Making API request:', `/api/tickets?${params.toString()}`)
@@ -88,7 +88,7 @@ export function TicketList() {
   const handleFilterChange = (status: TicketStatus | 'ALL', unread: boolean) => {
     console.log('Filter change:', { status, unread })
     const params = new URLSearchParams(searchParams)
-    if (status && status !== 'ALL') {
+    if (status) {
       params.set('status', status.toLowerCase())
     } else {
       params.delete('status')
@@ -116,7 +116,7 @@ export function TicketList() {
     return <ErrorAlert message={error} />
   }
 
-  const currentStatus = (searchParams.get('status')?.toUpperCase() || 'ALL') as TicketStatus | 'ALL'
+  const currentStatus = searchParams.get('status')?.toUpperCase() as TicketStatus | undefined
   const currentUnread = searchParams.get('unread') === 'true'
 
   console.log('Rendering ticket list:', {
@@ -133,7 +133,7 @@ export function TicketList() {
         </h1>
         <div className="flex gap-4 items-center">
           <Select
-            value={currentStatus}
+            value={currentStatus || 'ALL'}
             onValueChange={(value) => handleFilterChange(value as TicketStatus | 'ALL', currentUnread)}
           >
             <SelectTrigger className="w-[180px]">
@@ -150,7 +150,7 @@ export function TicketList() {
             <Checkbox
               id="unread"
               checked={currentUnread}
-              onCheckedChange={(checked) => handleFilterChange(currentStatus, checked as boolean)}
+              onCheckedChange={(checked) => handleFilterChange(currentStatus || 'ALL', checked as boolean)}
             />
             <label
               htmlFor="unread"
