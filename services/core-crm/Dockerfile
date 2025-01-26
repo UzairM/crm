@@ -30,5 +30,9 @@ ENV PORT=3001
 # Expose port (use ENV variable)
 EXPOSE ${PORT}
 
-# Start the server
-CMD ["npm", "start"] 
+# Create start script
+RUN echo '#!/bin/sh\nnpx prisma migrate deploy\nnpm start' > /app/start.sh
+RUN chmod +x /app/start.sh
+
+# Start the server with migrations
+CMD ["/app/start.sh"] 
