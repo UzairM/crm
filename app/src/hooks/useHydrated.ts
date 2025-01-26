@@ -1,11 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useAuthStore } from '../stores/auth'
 
 export function useHydrated() {
-  const [isHydrated, setIsHydrated] = useState(false)
-
-  useEffect(() => {
-    setIsHydrated(true)
-  }, [])
-
-  return isHydrated
+  return useAuthStore((state) => state.isHydrated)
 } 

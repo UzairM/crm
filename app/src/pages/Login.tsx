@@ -110,19 +110,19 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-background flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="text-center text-3xl font-bold tracking-tight">
+        <h2 className="text-center text-3xl font-bold tracking-tight text-foreground">
           Sign in to your account
         </h2>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <Card>
-          <CardHeader>
-            <CardTitle>Welcome back</CardTitle>
-            <CardDescription>Enter your credentials to continue</CardDescription>
+        <Card className="border-border">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-xl">Welcome back</CardTitle>
+            <CardDescription className="text-base">Enter your credentials to continue</CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="space-y-6" onSubmit={handleSubmit}>
+            <form className="space-y-4" onSubmit={handleSubmit}>
               {error && (
                 <Alert variant="destructive">
                   <AlertCircle className="h-4 w-4" />
@@ -130,28 +130,30 @@ export default function Login() {
                 </Alert>
               )}
               <div className="space-y-2">
-                <Label htmlFor="email">Email address</Label>
+                <Label htmlFor="email" className="text-sm font-medium">Email address</Label>
                 <Input
                   id="email"
                   name="email"
                   type="email"
                   autoComplete="email"
+                  className="border-input focus:ring-2 focus:ring-ring"
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password" className="text-sm font-medium">Password</Label>
                 <Input
                   id="password"
                   name="password"
                   type="password"
                   autoComplete="current-password"
+                  className="border-input focus:ring-2 focus:ring-ring"
                   required
                 />
               </div>
 
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground transition-all duration-200">
                 Sign in
               </Button>
             </form>

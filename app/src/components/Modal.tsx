@@ -1,10 +1,10 @@
-import { useUIStore } from '@/stores/ui'
+import { useUIStore } from '../stores/ui'
 import {
   Dialog,
   DialogContent,
   DialogFooter,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
+} from './ui/dialog'
+import { Button } from './ui/button'
 
 export function Modal() {
   const isOpen = useUIStore((state) => state.isModalOpen)

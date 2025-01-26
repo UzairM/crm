@@ -3,51 +3,43 @@
 @tailwind utilities;
 @layer base {
   :root {
-    /* Dark navy background */
-    --background: 222 47% 11%;
-    --foreground: 0 0% 95%;
+    /* Light theme */
+    --background: 210 17% 98%; /* #F8F9FA */
+    --foreground: 210 17% 20%;
 
-    /* Card backgrounds in charcoal */
-    --card: 220 18% 13%;
-    --card-foreground: 0 0% 95%;
+    --card: 210 16% 97%; /* #F8F9FA with slight tint */
+    --card-foreground: 210 17% 20%;
 
-    /* Popover in dark theme */
-    --popover: 220 18% 13%;
-    --popover-foreground: 0 0% 95%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 17% 20%;
 
-    /* Teal accents for primary actions */
-    --primary: 190 100% 42%;
+    --primary: 210 100% 50%; /* #007BFF */
     --primary-foreground: 0 0% 100%;
 
-    /* Gold accents for secondary actions */
-    --secondary: 43 54% 66%;
-    --secondary-foreground: 220 18% 13%;
+    --secondary: 199 39% 57%; /* #61A5C2 */
+    --secondary-foreground: 210 17% 20%;
 
-    /* Muted elements in dark theme */
-    --muted: 220 18% 18%;
-    --muted-foreground: 220 10% 70%;
+    --muted: 210 14% 97%; /* #E9ECEF */
+    --muted-foreground: 210 17% 45%;
 
-    /* Teal accent for interactive elements */
-    --accent: 190 100% 42%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 199 39% 57%; /* #61A5C2 */
+    --accent-foreground: 210 17% 20%;
 
-    /* Destructive actions in dark theme */
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    /* Subtle borders */
-    --border: 220 18% 20%;
-    --input: 220 18% 20%;
-    --ring: 190 100% 42%;
+    --border: 210 14% 89%; /* #CED4DA */
+    --input: 210 14% 89%;
+    --ring: 210 100% 50%;
 
     /* Chart colors */
-    --chart-1: 190 100% 42%;
-    --chart-2: 43 54% 66%;
-    --chart-3: 220 18% 40%;
-    --chart-4: 190 80% 50%;
-    --chart-5: 43 70% 50%;
+    --chart-1: 210 100% 50%;
+    --chart-2: 199 39% 57%;
+    --chart-3: 210 17% 45%;
+    --chart-4: 210 100% 65%;
+    --chart-5: 199 39% 72%;
 
-    --radius: 0.5rem
+    --radius: 0.5rem;
   }
   .dark {
     --background: 240 10% 3.9%;
@@ -84,4 +76,27 @@
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+}
+
+/* Neumorphic styles */
+.neu-shadow {
+  @apply shadow-neu transition-shadow duration-200;
+}
+
+.neu-shadow:hover {
+  @apply shadow-neu-sm;
+}
+
+.neu-shadow:active {
+  @apply shadow-neu-pressed;
+}
+
+/* Typography */
+.text-base {
+  @apply text-[15px] leading-relaxed;
+}
+
+/* Transitions */
+.transition-all {
+  @apply duration-200;
 } 

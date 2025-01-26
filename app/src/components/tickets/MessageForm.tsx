@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { api } from '@/lib/api'
-import { useAuthStore } from '@/stores/auth'
-import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Label } from '@/components/ui/label'
+import { api } from '../../lib/api'
+import { useAuthStore } from '../../stores/auth'
+import { Button } from '../ui/button'
+import { Textarea } from '../ui/textarea'
+import { Checkbox } from '../ui/checkbox'
+import { Label } from '../ui/label'
 
 interface MessageFormProps {
   ticketId: number

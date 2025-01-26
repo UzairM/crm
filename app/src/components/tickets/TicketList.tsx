@@ -1,13 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { Ticket, TicketStatus } from '@/types/ticket'
-import { api } from '@/lib/api'
-import { LoadingSpinner } from '@/components/LoadingSpinner'
-import { ErrorAlert } from '@/components/ErrorAlert'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { Ticket, TicketStatus } from '../../types/ticket'
+import { api } from '../../lib/api'
+import { LoadingSpinner } from '../LoadingSpinner'
+import { ErrorAlert } from '../ErrorAlert'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
+import { Checkbox } from '../ui/checkbox'
+import { Card, CardContent } from '../ui/card'
+import { Badge } from '../ui/badge'
+import { useAuthStore } from '../../stores/auth'
 
 export function TicketList() {
   const [tickets, setTickets] = useState<Ticket[]>([])
@@ -15,32 +16,79 @@ export function TicketList() {
   const [error, setError] = useState('')
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
+  const renderCount = useRef(0)
+  const user = useAuthStore(state => state.user)
+  const session = useAuthStore(state => state.session)
+  const mountedRef = useRef(true)
 
-  useEffect(() => {
-    const fetchTickets = async () => {
-      try {
-        const status = searchParams.get('status')?.toLowerCase()
-        const unread = searchParams.get('unread')
-        
-        const params = new URLSearchParams()
-        if (status) params.append('status', status)
-        if (unread === 'true') params.append('unread', 'true')
-        
-        const response = await api.get(`/api/tickets?${params.toString()}`)
-        setTickets(response.data)
-      } catch (err) {
+  console.log('TicketList render:', {
+    renderCount: ++renderCount.current,
+    isLoading,
+    error,
+    ticketsCount: tickets.length,
+    hasUser: !!user,
+    hasSession: !!session,
+    userEmail: user?.email
+  })
+
+  const fetchTickets = useCallback(async () => {
+    if (!mountedRef.current) return
+    
+    try {
+      console.log('Fetching tickets...')
+      const status = searchParams.get('status')?.toLowerCase()
+      const unread = searchParams.get('unread')
+      
+      const params = new URLSearchParams()
+      if (status && status !== 'all') params.append('status', status)
+      if (unread === 'true') params.append('unread', 'true')
+      
+      console.log('Making API request:', `/api/tickets?${params.toString()}`)
+      const response = await api.get(`/api/tickets?${params.toString()}`)
+      console.log('API response:', response.data)
+
+      if (!mountedRef.current) {
+        console.log('Component unmounted during fetch, abandoning update')
+        return
+      }
+
+      setTickets(response.data)
+      setIsLoading(false)
+      console.log('Updated tickets state:', {
+        ticketsCount: response.data.length,
+        isLoading: false
+      })
+    } catch (err) {
+      console.error('Failed to fetch tickets:', err)
+      if (mountedRef.current) {
         setError('Failed to load tickets')
-        console.error(err)
-      } finally {
         setIsLoading(false)
+        console.log('Set error state:', {
+          error: 'Failed to load tickets',
+          isLoading: false
+        })
       }
     }
-    fetchTickets()
   }, [searchParams])
 
-  const handleFilterChange = (status: TicketStatus | '', unread: boolean) => {
+  useEffect(() => {
+    console.log('TicketList mounted')
+    mountedRef.current = true
+
+    if (user && session) {
+      fetchTickets()
+    }
+
+    return () => {
+      console.log('TicketList unmounting')
+      mountedRef.current = false
+    }
+  }, [user, session, fetchTickets])
+
+  const handleFilterChange = (status: TicketStatus | 'ALL', unread: boolean) => {
+    console.log('Filter change:', { status, unread })
     const params = new URLSearchParams(searchParams)
-    if (status) {
+    if (status && status !== 'ALL') {
       params.set('status', status.toLowerCase())
     } else {
       params.delete('status')
@@ -50,45 +98,63 @@ export function TicketList() {
     } else {
       params.delete('unread')
     }
-    setSearchParams(params)
+    setSearchParams(params, { replace: true })
   }
 
-  if (isLoading) return <LoadingSpinner />
-  if (error) return <ErrorAlert message={error} />
+  if (!user || !session) {
+    console.log('No user or session, showing loading')
+    return <LoadingSpinner />
+  }
 
-  const currentStatus = searchParams.get('status')?.toUpperCase() as TicketStatus | undefined
+  if (isLoading) {
+    console.log('Rendering loading state')
+    return <LoadingSpinner />
+  }
+  
+  if (error) {
+    console.log('Rendering error state:', error)
+    return <ErrorAlert message={error} />
+  }
+
+  const currentStatus = (searchParams.get('status')?.toUpperCase() || 'ALL') as TicketStatus | 'ALL'
   const currentUnread = searchParams.get('unread') === 'true'
 
+  console.log('Rendering ticket list:', {
+    ticketsCount: tickets.length,
+    currentStatus,
+    currentUnread
+  })
+
   return (
-    <div className="grid gap-4">
+    <div className="grid gap-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+        <h1 className="text-2xl font-bold text-foreground">
           Tickets
         </h1>
         <div className="flex gap-4 items-center">
           <Select
-            value={currentStatus || ''}
-            onValueChange={(value) => handleFilterChange(value as TicketStatus | '', currentUnread)}
+            value={currentStatus}
+            onValueChange={(value) => handleFilterChange(value as TicketStatus | 'ALL', currentUnread)}
           >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="All Tickets" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Tickets</SelectItem>
+              <SelectItem value="ALL">All Tickets</SelectItem>
               <SelectItem value="OPEN">Open</SelectItem>
               <SelectItem value="CLOSED">Closed</SelectItem>
             </SelectContent>
           </Select>
           
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-3">
             <Checkbox
               id="unread"
               checked={currentUnread}
-              onCheckedChange={(checked) => handleFilterChange(currentStatus || '', checked as boolean)}
+              onCheckedChange={(checked) => handleFilterChange(currentStatus, checked as boolean)}
             />
             <label
               htmlFor="unread"
-              className="text-sm text-muted-foreground leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              className="text-sm font-medium text-muted-foreground leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
               Unread Only
             </label>
@@ -99,10 +165,10 @@ export function TicketList() {
       {tickets.map((ticket) => (
         <Card
           key={ticket.id}
-          className={`${!ticket.isRead ? 'border-l-4 border-l-primary' : ''} cursor-pointer`}
+          className={`${!ticket.isRead ? 'border-l-4 border-l-primary' : ''} cursor-pointer transition-all duration-200 hover:bg-muted/5`}
           onClick={() => navigate(`/tickets/${ticket.id}`)}
         >
-          <CardContent className="p-4">
+          <CardContent className="p-6">
             <div className="flex justify-between items-start">
               <h3 className="font-semibold text-lg text-foreground">{ticket.subject}</h3>
               <Badge variant={
@@ -122,9 +188,11 @@ export function TicketList() {
         </Card>
       ))}
       {tickets.length === 0 && (
-        <div className="text-center text-muted-foreground py-8">
-          No tickets found
-        </div>
+        <Card>
+          <CardContent className="p-12 text-center">
+            <p className="text-muted-foreground">No tickets found</p>
+          </CardContent>
+        </Card>
       )}
     </div>
   )
