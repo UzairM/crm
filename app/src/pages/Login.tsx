@@ -74,13 +74,14 @@ export default function Login() {
         try {
           const user = await getMe()
           setUser(user)
+          // Only navigate after both session and user data are set
+          navigate('/dashboard')
         } catch (error) {
           console.error('Failed to fetch user data:', error)
-          throw error
+          setError('Failed to fetch user data. Please try again.')
+          setSession(null)
         }
       }
-
-      navigate('/dashboard')
     } catch (error: unknown) {
       console.error('Login failed:', error)
       const loginError = error as LoginFlowError

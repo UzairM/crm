@@ -70,6 +70,9 @@ module.exports = {
 				'neu': '9px 9px 18px #d1d9e6, -9px -9px 18px #ffffff',
 				'neu-sm': '5px 5px 10px #d1d9e6, -5px -5px 10px #ffffff',
 				'neu-pressed': 'inset 9px 9px 18px #d1d9e6, inset -9px -9px 18px #ffffff',
+				'neu-dark': '9px 9px 18px rgba(0, 0, 0, 0.3), -9px -9px 18px rgba(255, 255, 255, 0.02)',
+				'neu-dark-sm': '5px 5px 10px rgba(0, 0, 0, 0.3), -5px -5px 10px rgba(255, 255, 255, 0.02)',
+				'neu-dark-pressed': 'inset 9px 9px 18px rgba(0, 0, 0, 0.3), inset -9px -9px 18px rgba(255, 255, 255, 0.02)',
 			},
 			keyframes: {
 				"accordion-down": {
