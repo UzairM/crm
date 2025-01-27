@@ -101,6 +101,14 @@ export function TicketList() {
     setSearchParams(params, { replace: true })
   }
 
+  const handleTicketClick = (ticketId: number) => {
+    if (user?.role === 'CLIENT') {
+      navigate(`/portal/tickets/${ticketId}`)
+    } else {
+      navigate(`/tickets/${ticketId}`)
+    }
+  }
+
   if (!user || !session) {
     console.log('No user or session, showing loading')
     return <LoadingSpinner />
@@ -166,7 +174,7 @@ export function TicketList() {
         <Card
           key={ticket.id}
           className={`${!ticket.isRead ? 'border-l-4 border-l-primary' : ''} cursor-pointer transition-all duration-200 hover:bg-muted/5`}
-          onClick={() => navigate(`/tickets/${ticket.id}`)}
+          onClick={() => handleTicketClick(ticket.id)}
         >
           <CardContent className="p-6">
             <div className="flex justify-between items-start">

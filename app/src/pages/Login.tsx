@@ -1,8 +1,7 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { ory } from '../lib/ory'
 import { useAuthStore } from '../stores/auth'
-import { useUIStore } from '../stores/ui'
 import type { AxiosError } from 'axios'
 import type { UiNodeInputAttributes } from '@ory/client'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card"
@@ -15,10 +14,10 @@ import { getMe } from '../lib/api'
 
 export default function Login() {
   const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const setUser = useAuthStore((state) => state.setUser)
   const setSession = useAuthStore((state) => state.setSession)
-  const setLoading = useUIStore((state) => state.setLoading)
 
   useEffect(() => {
     const checkSession = async () => {
@@ -43,8 +42,8 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setLoading(true)
     setError(null)
+    setIsLoading(true)
     
     try {
       const form = e.currentTarget as HTMLFormElement
@@ -103,7 +102,7 @@ export default function Login() {
         setError(axiosError.message || 'An unexpected error occurred')
       }
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
@@ -111,15 +110,18 @@ export default function Login() {
     <div className="min-h-screen bg-background flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="text-center text-3xl font-bold tracking-tight text-foreground">
-          Sign in to your account
+          Invest Smarter, Together
         </h2>
+        <p className="mt-2 text-center text-sm text-muted-foreground">
+          Your trusted partner in financial management
+        </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <Card className="border-border">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-xl">Welcome back</CardTitle>
-            <CardDescription className="text-base">Enter your credentials to continue</CardDescription>
+            <CardTitle className="text-xl">Welcome</CardTitle>
+            <CardDescription className="text-base">Enter your Elphinstone Account credentials to continue</CardDescription>
           </CardHeader>
           <CardContent>
             <form className="space-y-4" onSubmit={handleSubmit}>
@@ -153,10 +155,22 @@ export default function Login() {
                 />
               </div>
 
-              <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground transition-all duration-200">
-                Sign in
+              <Button 
+                type="submit"
+                disabled={isLoading}
+                className="w-full bg-primary hover:bg-primary/90 text-white"
+              >
+                {isLoading ? 'Signing in...' : 'Sign in'}
               </Button>
             </form>
+            <div className="flex justify-between text-sm mt-6">
+              <Link to="/recovery" className="text-foreground hover:underline">
+                Forgot Password?
+              </Link>
+              <Link to="/verification" className="text-foreground hover:underline">
+                Verify Email
+              </Link>
+            </div>
           </CardContent>
         </Card>
       </div>

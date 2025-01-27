@@ -4,14 +4,21 @@ import { ory } from '../lib/ory'
 import { Button } from "./ui/button"
 import { Avatar, AvatarFallback } from "./ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
-import { LogOut, User } from "lucide-react"
-import { Link } from "react-router-dom"
+import { LogOut, User, Settings } from "lucide-react"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useEffect, useRef } from 'react'
+import { ThemeToggle } from './ThemeToggle'
+import { useThemeStore } from '../stores/theme'
 
 export function Header() {
   const user = useAuthStore((state) => state.user)
   const session = useAuthStore((state) => state.session)
+  const setUser = useAuthStore((state) => state.setUser)
+  const setSession = useAuthStore((state) => state.setSession)
   const isHydrated = useHydrated()
+  const theme = useThemeStore((state) => state.theme)
+  const location = useLocation()
+  const navigate = useNavigate()
   const renderCount = useRef(0)
 
   useEffect(() => {
@@ -30,39 +37,47 @@ export function Header() {
   const handleLogout = async () => {
     try {
       console.log('Initiating logout')
+      // Create a logout flow
       const { data } = await ory.createBrowserLogoutFlow()
-      window.location.href = data.logout_url
+      
+      // Execute the logout flow
+      await ory.updateLogoutFlow({ token: data.logout_token })
+      
+      // Clear local auth state
+      setUser(null)
+      setSession(null)
+      
+      // Navigate to login
+      navigate('/login')
     } catch (error) {
       console.error('Logout failed:', error)
     }
   }
 
-  // Always render the base navigation structure
+  const logoSrc = theme === 'dark' ? '/logo-light.webp' : '/logo-dark.webp'
+  const isLoginPage = location.pathname === '/login'
+
   return (
     <nav className="sticky top-0 z-40 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center">
-        <div className="flex items-center gap-8">
-          <Link to="/dashboard">
-            <h1 className="text-xl font-bold text-foreground">
-              Finance CRM
-            </h1>
+        <div className="flex items-center">
+          <Link to={user?.role === 'CLIENT' ? '/portal' : '/dashboard'} className="flex items-center gap-2">
+            <img 
+              src={logoSrc} 
+              alt="Finance CRM Logo" 
+              className="h-6 w-auto"
+            />
           </Link>
-          <nav className="hidden md:flex space-x-6">
-            <Link 
-              to="/dashboard" 
-              className="text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Dashboard
-            </Link>
-            <Link 
-              to="/tickets" 
-              className="text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Tickets
-            </Link>
-          </nav>
         </div>
         <div className="flex flex-1 items-center justify-end space-x-4">
+          <ThemeToggle />
+          {user && !isLoginPage && (
+            <Button variant="ghost" size="icon" asChild>
+              <Link to="/settings">
+                <Settings className="h-5 w-5 text-foreground hover:text-foreground/80 transition-colors" />
+              </Link>
+            </Button>
+          )}
           {user && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

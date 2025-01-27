@@ -1,67 +1,11 @@
 import { ProtectedRoute } from '../components/ProtectedRoute'
-import { useAuthStore } from '../stores/auth'
-import { useHydrated } from '../hooks/useHydrated'
-import { ory } from '../lib/ory'
-import { Button } from "../components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card"
-import { Avatar, AvatarFallback } from "../components/ui/avatar"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../components/ui/dropdown-menu"
-import { LogOut, User, BarChart3, Users, Ticket, Settings } from "lucide-react"
+import { BarChart3, Users, Ticket, Settings } from "lucide-react"
 
 export default function Dashboard() {
-  const user = useAuthStore((state) => state.user)
-  const isHydrated = useHydrated()
-
-  const handleLogout = async () => {
-    try {
-      const { data } = await ory.createBrowserLogoutFlow()
-      window.location.href = data.logout_url
-    } catch (error) {
-      console.error('Logout failed:', error)
-    }
-  }
-
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-background">
-        {/* Navbar with subtle border */}
-        <nav className="border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          <div className="container mx-auto">
-            <div className="flex justify-between h-16">
-              <div className="flex items-center">
-                <h1 className="text-xl font-bold text-foreground">
-                  Finance CRM
-                </h1>
-              </div>
-              <div className="flex items-center space-x-4">
-                {isHydrated && user && (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                        <Avatar>
-                          <AvatarFallback className="bg-muted text-foreground">
-                            {user.email?.charAt(0).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-56">
-                      <DropdownMenuItem className="flex items-center gap-2">
-                        <User className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">{user.email}</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="flex items-center gap-2 text-destructive focus:text-destructive" onClick={handleLogout}>
-                        <LogOut className="h-4 w-4" />
-                        <span className="text-sm">Log out</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                )}
-              </div>
-            </div>
-          </div>
-        </nav>
-
         <main className="container py-6">
           {/* Quick stats section */}
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">

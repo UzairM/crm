@@ -5,7 +5,6 @@ import { TicketList } from '../components/tickets/TicketList'
 import { useAuthStore } from '../stores/auth'
 import { useEffect, useRef, useState } from 'react'
 import { LoadingSpinner } from '../components/LoadingSpinner'
-import { Header } from '../components/Header'
 
 export default function ClientPortal() {
   const navigate = useNavigate()
@@ -38,7 +37,6 @@ export default function ClientPortal() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <Header />
         <div className="flex items-center justify-center h-[calc(100vh-4rem)]">
           <LoadingSpinner />
         </div>
@@ -49,7 +47,6 @@ export default function ClientPortal() {
   if (!user || !session) {
     return (
       <div className="min-h-screen bg-background">
-        <Header />
         <div className="flex items-center justify-center h-[calc(100vh-4rem)]">
           <LoadingSpinner />
         </div>
@@ -59,7 +56,6 @@ export default function ClientPortal() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
       <div className="container py-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 space-y-4 md:space-y-0">
           <div>
