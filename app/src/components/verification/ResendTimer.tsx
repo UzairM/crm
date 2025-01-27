@@ -48,7 +48,7 @@ export function ResendTimer({ onResend, isResending }: ResendTimerProps) {
               cx="16"
               cy="16"
               r={radius}
-              className="fill-none stroke-muted-foreground/20"
+              className="fill-none stroke-foreground/20"
               strokeWidth="2"
             />
             {/* Countdown circle */}
@@ -56,7 +56,7 @@ export function ResendTimer({ onResend, isResending }: ResendTimerProps) {
               cx="16"
               cy="16"
               r={radius}
-              className="fill-none stroke-primary transition-all duration-150 ease-linear"
+              className="fill-none stroke-foreground transition-all duration-150 ease-linear"
               strokeWidth="2"
               strokeDasharray={circumference}
               strokeDashoffset={offset}

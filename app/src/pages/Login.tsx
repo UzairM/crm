@@ -1,8 +1,8 @@
+import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { useState, useEffect } from 'react'
 import { ory } from '../lib/ory'
 import { useAuthStore } from '../stores/auth'
-import type { AxiosError } from 'axios'
+import type { AxiosError, AxiosResponse } from 'axios'
 import type { UiNodeInputAttributes } from '@ory/client'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card"
 import { Button } from "../components/ui/button"
@@ -12,42 +12,33 @@ import { Alert, AlertDescription } from "../components/ui/alert"
 import { AlertCircle } from "lucide-react"
 import { getMe } from '../lib/api'
 
-export default function Login() {
-  const navigate = useNavigate()
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const setUser = useAuthStore((state) => state.setUser)
-  const setSession = useAuthStore((state) => state.setSession)
-
-  useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const { data: session } = await ory.toSession()
-        setSession(session)
-        
-        // Get user data from core CRM
-        try {
-          const user = await getMe()
-          setUser(user)
-          navigate('/dashboard')
-        } catch (error) {
-          console.error('Failed to fetch user data:', error)
-        }
-      } catch (err) {
-        // No existing session
+interface LoginFlowError extends AxiosError {
+  response?: AxiosResponse & {
+    data: {
+      ui: {
+        messages?: Array<{
+          id: number
+          text: string
+          type: string
+        }>
       }
     }
-    checkSession()
-  }, [navigate, setSession, setUser])
+  }
+}
+
+export default function Login() {
+  const navigate = useNavigate()
+  const { setSession, setUser } = useAuthStore()
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setError(null)
     setIsLoading(true)
-    
+    setError(null)
+
     try {
-      const form = e.currentTarget as HTMLFormElement
-      const formData = new FormData(form)
+      const formData = new FormData(e.currentTarget)
       const email = formData.get('email') as string
       const password = formData.get('password') as string
 
@@ -68,9 +59,9 @@ export default function Login() {
       const { data } = await ory.updateLoginFlow({
         flow: flow.id,
         updateLoginFlowBody: {
-          method: 'password',
           identifier: email,
           password,
+          method: 'password',
           csrf_token: csrfToken,
         },
       })
@@ -91,16 +82,12 @@ export default function Login() {
 
       navigate('/dashboard')
     } catch (error: unknown) {
-      const axiosError = error as AxiosError<{ error?: { reason?: string } }>
-      if (axiosError.response) {
-        const status = axiosError.response.status
-        const reason = axiosError.response.data?.error?.reason
-        setError(reason || `Error ${status}: ${axiosError.message}`)
-      } else if (axiosError.request) {
-        setError('Network error. Please check your connection.')
-      } else {
-        setError(axiosError.message || 'An unexpected error occurred')
-      }
+      console.error('Login failed:', error)
+      const loginError = error as LoginFlowError
+      setError(
+        loginError.response?.data?.ui?.messages?.[0]?.text || 
+        'Failed to sign in. Please try again.'
+      )
     } finally {
       setIsLoading(false)
     }
@@ -168,7 +155,7 @@ export default function Login() {
                 Forgot Password?
               </Link>
               <Link to="/verification" className="text-foreground hover:underline">
-                Verify Email
+                Verify Email?
               </Link>
             </div>
           </CardContent>
