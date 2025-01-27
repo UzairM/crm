@@ -1,42 +1,23 @@
 import { useAuthStore } from '../stores/auth'
-import { useHydrated } from '../hooks/useHydrated'
 import { ory } from '../lib/ory'
 import { Button } from "./ui/button"
 import { Avatar, AvatarFallback } from "./ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
 import { LogOut, User, Settings } from "lucide-react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
-import { useEffect, useRef } from 'react'
 import { ThemeToggle } from './ThemeToggle'
 import { useThemeStore } from '../stores/theme'
 
 export function Header() {
   const user = useAuthStore((state) => state.user)
-  const session = useAuthStore((state) => state.session)
   const setUser = useAuthStore((state) => state.setUser)
   const setSession = useAuthStore((state) => state.setSession)
-  const isHydrated = useHydrated()
   const theme = useThemeStore((state) => state.theme)
   const location = useLocation()
   const navigate = useNavigate()
-  const renderCount = useRef(0)
-
-  useEffect(() => {
-    console.log('Header mounted')
-    return () => console.log('Header unmounted')
-  }, [])
-
-  console.log('Header render:', {
-    renderCount: ++renderCount.current,
-    isHydrated,
-    hasUser: !!user,
-    hasSession: !!session,
-    userEmail: user?.email
-  })
 
   const handleLogout = async () => {
     try {
-      console.log('Initiating logout')
       // Create a logout flow
       const { data } = await ory.createBrowserLogoutFlow()
       
@@ -50,7 +31,7 @@ export function Header() {
       // Navigate to login
       navigate('/login')
     } catch (error) {
-      console.error('Logout failed:', error)
+      // Handle error silently
     }
   }
 
