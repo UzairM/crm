@@ -1,7 +1,38 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card"
 import { BarChart3, Users, Ticket, Settings } from "lucide-react"
+import { useEffect, useRef } from "react"
+import { useAuthStore } from "../stores/auth"
+import { useHydrated } from "../hooks/useHydrated"
 
 export default function Dashboard() {
+  const renderCount = useRef(0)
+  const user = useAuthStore(state => state.user)
+  const session = useAuthStore(state => state.session)
+  const isHydrated = useHydrated()
+
+  useEffect(() => {
+    console.log('Dashboard mounted:', {
+      renderCount: ++renderCount.current,
+      isHydrated,
+      hasUser: !!user,
+      hasSession: !!session,
+      userEmail: user?.email,
+      userRole: user?.role,
+      sessionActive: session?.active
+    })
+    return () => console.log('Dashboard unmounted')
+  }, [isHydrated, user, session])
+
+  console.log('Dashboard render:', {
+    renderCount: ++renderCount.current,
+    isHydrated,
+    hasUser: !!user,
+    hasSession: !!session,
+    userEmail: user?.email,
+    userRole: user?.role,
+    sessionActive: session?.active
+  })
+
   return (
     <div className="min-h-screen bg-background">
       <main className="container py-6">
