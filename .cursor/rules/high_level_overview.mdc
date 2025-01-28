@@ -1,3 +1,7 @@
+---
+description: High Level Overview and applies to frontend and backend 
+globs: 
+---
 # Finance CRM MVP: Two-Service Approach (Core + AI) with React Frontend
 
 This document describes a Finance CRM MVP that uses:  

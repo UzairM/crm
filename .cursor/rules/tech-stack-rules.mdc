@@ -1,3 +1,7 @@
+---
+description: These are the rules for working with this codebase and apply to frontend and backend 
+globs: 
+---
 # Tech Stack Rules & Best Practices
 
 This document covers best practices, common pitfalls, and important considerations for each technology used in the Finance CRM MVP (as described in high_level_overview.md). The solution comprises:

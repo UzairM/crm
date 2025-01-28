@@ -1,3 +1,7 @@
+---
+description: These are the initial User Stories. this may change according to new requirements
+globs: 
+---
 # Comprehensive User Stories for Finance CRM MVP Features
 
 Below is a set of user stories—each with acceptance criteria—that cover all the MVP features outlined in mvp_features.md. Each user story follows the format "As a [type of user], I want to [perform action], so that [benefit]."

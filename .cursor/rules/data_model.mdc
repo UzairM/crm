@@ -1,3 +1,7 @@
+---
+description: These are the initial data model for this codebase. this may change according to new requirements
+globs: 
+---
 # Finance CRM MVP – Data Model Specification
 
 This document defines the core data structures (tables, fields, and relationships) used in the Finance CRM MVP. It consolidates requirements from the various documents (@api_endpoints.md, @mvp_features.md, @User_stories.md, @high_level_overview.md, @tech-stack-rules.md, @ui-rules.md, @theme-rules.md, and Codebase Best Practices).

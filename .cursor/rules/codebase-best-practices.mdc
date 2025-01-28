@@ -1,3 +1,7 @@
+---
+description: These are the best practices for working with this codebase and apply to frontend and backend 
+globs: 
+---
 # Codebase Best Practices
 
 This document outlines how to structure and maintain a scalable, AI-first codebase for the Finance CRM MVP. It references the principles and rules defined in @high_level_overview.md, @tech-stack-rules.md, @ui-rules.md, and @theme-rules.md to ensure that:

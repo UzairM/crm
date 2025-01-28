@@ -1,3 +1,7 @@
+---
+description: These are the initial api endpoints. this may change according to new requirements
+globs: 
+---
 # API Endpoints for Finance CRM MVP
 
 This document defines all API endpoints that the React front-end will use to interact with both the Core CRM (Node.js + Express) and the AI Service (Python + FastAPI). These endpoints are derived from the MVP features and user stories covered in:
@@ -16,15 +20,15 @@ They address ticketing, client management, AI-suggested responses, auto-generate
 
 ## Table of Contents
 
-1. [General Structure & Conventions](#general-structure--conventions)  
-2. [Authentication & User Endpoints](#1-authentication--user-endpoints)  
-3. [Role Management Endpoints](#2-role-management-endpoints)  
-4. [Tickets & Messages Endpoints](#3-tickets--messages-endpoints)  
-5. [Clients & Segmentation Endpoints](#4-clients--segmentation-endpoints)  
-6. [Bulk Email & Marketing Endpoints](#5-bulk-email--marketing-endpoints)  
-7. [SLA & Manager Dashboard Endpoints](#6-sla--manager-dashboard-endpoints)  
-8. [Client Portal Endpoints](#7-client-portal-endpoints)  
-9. [AI Service Endpoints](#8-ai-service-endpoints)
+1. [General Structure & Conventions](mdc:#general-structure--conventions)  
+2. [Authentication & User Endpoints](mdc:#1-authentication--user-endpoints)  
+3. [Role Management Endpoints](mdc:#2-role-management-endpoints)  
+4. [Tickets & Messages Endpoints](mdc:#3-tickets--messages-endpoints)  
+5. [Clients & Segmentation Endpoints](mdc:#4-clients--segmentation-endpoints)  
+6. [Bulk Email & Marketing Endpoints](mdc:#5-bulk-email--marketing-endpoints)  
+7. [SLA & Manager Dashboard Endpoints](mdc:#6-sla--manager-dashboard-endpoints)  
+8. [Client Portal Endpoints](mdc:#7-client-portal-endpoints)  
+9. [AI Service Endpoints](mdc:#8-ai-service-endpoints)
 
 ---
 
@@ -64,13 +68,7 @@ Assign or update the local role for a user.
 • Body fields:  
   - role (string) → "Agent" | "Manager" | "Client"
 
-Example Body:
 
-[Removed snippet]
-
-Example Success Response:
-
-[Removed snippet]
 
 ---
 
@@ -85,13 +83,7 @@ Channels can be "chat", "email", "whatsapp", etc.
   - Client: can create a ticket in context.  
   - Agent/Manager: can create on behalf of a client.
 
-Example Body:
 
-[Removed snippet]
-
-Example Success Response:
-
-[Removed snippet]
 
 ---
 
@@ -128,13 +120,7 @@ Add a message or internal note to an existing ticket.
   - Agent, Manager → can post client-facing or internal messages.  
   - Client → can post client-facing comments only.
 
-Example Body:
 
-[Removed snippet]
-
-Example Success Response:
-
-[Removed snippet]
 
 ---
 
@@ -162,13 +148,7 @@ Create a new client record.
 • Protected: Yes (Manager or Agent).  
 • Roles allowed: Manager, Agent.
 
-Example Body:
 
-[Removed snippet]
-
-Example Success Response:
-
-[Removed snippet]
 
 ---
 
@@ -203,13 +183,7 @@ Update client info (e.g., netWorth, region, riskTolerance).
 • Protected: Yes.  
 • Roles allowed: Manager, Agent.
 
-Example Body:
 
-[Removed snippet]
-
-Example Success Response:
-
-[Removed snippet]
 
 ---
 
@@ -225,13 +199,7 @@ Create and send a new bulk email campaign to all or segmented clients.
   - body (string)  
   - segmentCriteria (object?) – optional for segmentation
 
-Example Body:
 
-[Removed snippet]
-
-Example Success Response:
-
-[Removed snippet]
 
 ---
 
@@ -255,13 +223,7 @@ Set the default SLA resolution target (in hours).
 • Protected: Yes.  
 • Roles allowed: Manager.
 
-Example Body:
 
-[Removed snippet]
-
-Example Success Response:
-
-[Removed snippet]
 
 ---
 
@@ -309,13 +271,7 @@ Client adds a new comment or update to their existing open ticket.
 • Protected: Yes.  
 • Roles allowed: Client (owner of the ticket).
 
-Example Body:
 
-[Removed snippet]
-
-Example Success Response:
-
-[Removed snippet]
 
 ---
 

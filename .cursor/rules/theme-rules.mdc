@@ -1,3 +1,7 @@
+---
+description: These are the theme rules and apply to frontend 
+globs: 
+---
 # Theme Rules & Visual Strategy
 
 This document defines the primary look and feel (Minimalist + slight Neumorphism), referencing @User_stories.md, @high_level_overview.md, and @tech-stack-rules.md. The aim is to keep the interface pleasant for long working hours while retaining clarity.

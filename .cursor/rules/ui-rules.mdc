@@ -1,3 +1,7 @@
+---
+description: These are the UI rules for the frontend
+globs: 
+---
 # UI Rules & Guidelines
 
 This document details the UI principles drawn from @User_stories.md, @high_level_overview.md, and @tech-stack-rules.md. It emphasizes a primarily minimalist aesthetic with gentle neumorphism elements, ensuring a user-friendly, responsive interface for Agents, Managers, and Clients working long hours.
