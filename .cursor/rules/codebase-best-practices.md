@@ -11,7 +11,7 @@ This document outlines how to structure and maintain a scalable, AI-first codeba
 
 ## 1. Folder Structure & File Organization
 
-Below is a suggested file tree that reflects the two-service approach (Express-based Core CRM and Python-based AI Service) and a Remix frontend. This structure balances clarity, modularity, and alignment with the MVP requirements (ticketing, AI integration, multi-channel features, etc.). Adjust the structure as needed for your specific deployment or scaling needs. 
+Below is a suggested file tree that reflects the two-service approach (Express-based Core CRM and Python-based AI Service) and a React frontend. This structure balances clarity, modularity, and alignment with the MVP requirements (ticketing, AI integration, multi-channel features, etc.). Adjust the structure as needed for your specific deployment or scaling needs. 
 
 finance-crm/
 ├─ README.md
@@ -19,7 +19,7 @@ finance-crm/
 ├─ package.json
 ├─ yarn.lock (or package-lock.json)
 │
-├─ app/ # React Remix Frontend
+├─ app/ # React Frontend
 │ ├─ routes/
 │ │ ├─ login.tsx # Login page using ORY SDK
 │ │ ├─ dashboard.tsx # Displays unread tickets, AI suggestions
@@ -83,8 +83,8 @@ finance-crm/
 
 ## 2. Recommended Conventions & Standards
 
-1. Each file should begin with a header comment that explains the file’s contents, purpose, and any key dependencies.  
-2. For TypeScript code in the Core CRM and Remix app, use TSDoc (@param, @returns) for functions, classes, and interfaces:  
+1. Each file should begin with a header comment that explains the file's contents, purpose, and any key dependencies.  
+2. For TypeScript code in the Core CRM and React app, use TSDoc (@param, @returns) for functions, classes, and interfaces:  
    - Document parameters for clarity.  
    - Briefly describe the return value or side effects.  
 3. For Python in AI Service (FastAPI), use docstrings (triple quotes) to explain endpoints and their query parameters, request bodies, or returned values.  
@@ -95,7 +95,7 @@ finance-crm/
 ## 3. Code Organization & Modularity
 
 • Follow the Single Responsibility Principle: each module, component, or function has one well-defined functionality.  
-• In the Remix app, separate top-level route files (e.g., /dashboard.tsx) from deeper route subfolders (e.g., /manager, /portal).  
+• In the React app, separate top-level route files (e.g., /dashboard.tsx) from deeper route subfolders (e.g., /manager, /portal).  
 • In the Express Core CRM, group routes by domain (tickets, clients, bulk email, SLA config) and implement a corresponding controller or service file for each.  
 • In the AI service, maintain distinct routers for each major feature (suggested replies, FAQ generation, ingestion) and keep business logic in separate service or utility files.
 
@@ -104,7 +104,7 @@ finance-crm/
 ## 4. Ensuring Alignment with UI & Theme Rules
 
 • Reference @ui-rules.md and @theme-rules.md when building both the frontend (components, styles) and any server-rendered UI pages.  
-• Keep accessibility and responsiveness in mind: use Remix’s loader/action for data fetching while applying modular CSS or a utility-first framework (if desired) for fluid layouts.  
+• Keep accessibility and responsiveness in mind: use React Query/SWR for data fetching while applying modular CSS or a utility-first framework (if desired) for fluid layouts.  
 • When implementing theme accents (e.g., gold for high-priority tickets or teal for standard items), maintain consistency across all React components and any server-side email templates.  
 
 ---
@@ -116,14 +116,14 @@ finance-crm/
 • For testing:
   - In the frontend, use frameworks like React Testing Library for component behavior.  
   - In the Core CRM, unit-test controllers/services with a mocking approach for the database/AI service.  
-  - In the AI service, test each endpoint’s logic and potential edge cases (e.g., missing fields, large file ingestion).
+  - In the AI service, test each endpoint's logic and potential edge cases (e.g., missing fields, large file ingestion).
 
 ---
 
 ## 6. Scaling & Future Extensions
 
 • Keep the recommended line limit to ensure new features (like real-time notifications or advanced AI compliance) remain manageable in separate modules.  
-• Use environment-specific configurations to handle differences in local dev, staging, and production for ORY integration, database settings, etc. (see “Config & Secrets” best practices in @tech-stack-rules.md).  
+• Use environment-specific configurations to handle differences in local dev, staging, and production for ORY integration, database settings, etc. (see "Config & Secrets" best practices in @tech-stack-rules.md).  
 • Document any new services or microservices under /services to clarify their domain (notifications, analytics, etc.) and integrate them into the code tree as the project evolves.
 
 ---

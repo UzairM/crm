@@ -1,6 +1,6 @@
 # API Endpoints for Finance CRM MVP
 
-This document defines all API endpoints that the React Remix front-end will use to interact with both the Core CRM (Node.js + Express) and the AI Service (Python + FastAPI). These endpoints are derived from the MVP features and user stories covered in:
+This document defines all API endpoints that the React front-end will use to interact with both the Core CRM (Node.js + Express) and the AI Service (Python + FastAPI). These endpoints are derived from the MVP features and user stories covered in:
 
 - @high_level_overview.md  
 - @mvp_features.md  

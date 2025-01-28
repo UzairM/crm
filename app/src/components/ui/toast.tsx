@@ -1,3 +1,58 @@
+/**
+ * A composable toast notification system built on Radix UI's Toast primitive.
+ * Features a neumorphic design with swipe-to-dismiss and animations.
+ * 
+ * Components:
+ * - ToastProvider: Manages toast notifications globally
+ * - ToastViewport: Container where toasts appear
+ * - Toast: Individual toast notification
+ * - ToastTitle: Main message of the toast
+ * - ToastDescription: Additional details
+ * - ToastClose: Dismiss button
+ * - ToastAction: Optional action button
+ * 
+ * Variants:
+ * - default: Standard toast with neumorphic shadow
+ * - success: Green toast for success messages
+ * - destructive: Red toast for errors/warnings
+ * 
+ * Features:
+ * - Swipe to dismiss
+ * - Animated transitions
+ * - Mobile responsive
+ * - Screen reader support
+ * - Custom duration
+ * - Action buttons
+ * - Neumorphic styling
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * // Provider setup (in root layout)
+ * <ToastProvider>
+ *   <App />
+ *   <ToastViewport />
+ * </ToastProvider>
+ * 
+ * // Using toast (with useToast hook)
+ * const { toast } = useToast()
+ * 
+ * toast({
+ *   title: "Success!",
+ *   description: "Your changes have been saved.",
+ *   variant: "success",
+ *   action: <ToastAction altText="Undo">Undo</ToastAction>
+ * })
+ * 
+ * // Custom toast component
+ * <Toast variant="destructive">
+ *   <ToastTitle>Error</ToastTitle>
+ *   <ToastDescription>Something went wrong.</ToastDescription>
+ *   <ToastClose />
+ * </Toast>
+ * ```
+ */
+
 import * as React from "react"
 import * as ToastPrimitives from "@radix-ui/react-toast"
 import { cva, type VariantProps } from "class-variance-authority"
@@ -5,8 +60,13 @@ import { X } from "lucide-react"
 
 import { cn } from "../../lib/utils"
 
+/** Global toast notification provider */
 const ToastProvider = ToastPrimitives.Provider
 
+/**
+ * Container for toast notifications
+ * Positioned at the top-right by default
+ */
 const ToastViewport = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Viewport>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Viewport>
@@ -22,6 +82,10 @@ const ToastViewport = React.forwardRef<
 ))
 ToastViewport.displayName = ToastPrimitives.Viewport.displayName
 
+/**
+ * Style variants for toast notifications
+ * Includes default, success, and destructive variants
+ */
 const toastVariants = cva(
   "group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-md border p-6 pr-8 shadow-lg transition-all data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-top-full data-[state=open]:sm:slide-in-from-bottom-full",
   {
@@ -39,6 +103,10 @@ const toastVariants = cva(
   }
 )
 
+/**
+ * Individual toast notification component
+ * Can be customized with variants and additional props
+ */
 const Toast = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Root>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> &
@@ -54,6 +122,10 @@ const Toast = React.forwardRef<
 })
 Toast.displayName = ToastPrimitives.Root.displayName
 
+/**
+ * Optional action button for toast notifications
+ * Styled differently for destructive toasts
+ */
 const ToastAction = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Action>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Action>
@@ -69,6 +141,10 @@ const ToastAction = React.forwardRef<
 ))
 ToastAction.displayName = ToastPrimitives.Action.displayName
 
+/**
+ * Close button for dismissing toasts
+ * Appears on hover with proper focus states
+ */
 const ToastClose = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Close>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Close>
@@ -87,6 +163,10 @@ const ToastClose = React.forwardRef<
 ))
 ToastClose.displayName = ToastPrimitives.Close.displayName
 
+/**
+ * Main heading of the toast notification
+ * Uses semibold text for emphasis
+ */
 const ToastTitle = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Title>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Title>
@@ -99,6 +179,10 @@ const ToastTitle = React.forwardRef<
 ))
 ToastTitle.displayName = ToastPrimitives.Title.displayName
 
+/**
+ * Secondary text for additional context
+ * Slightly transparent for visual hierarchy
+ */
 const ToastDescription = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Description>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Description>
@@ -111,8 +195,10 @@ const ToastDescription = React.forwardRef<
 ))
 ToastDescription.displayName = ToastPrimitives.Description.displayName
 
+/** Props for the Toast component */
 type ToastProps = React.ComponentPropsWithoutRef<typeof Toast>
 
+/** Type for toast action elements */
 type ToastActionElement = React.ReactElement<typeof ToastAction>
 
 export {

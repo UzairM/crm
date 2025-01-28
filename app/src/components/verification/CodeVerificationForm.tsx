@@ -1,3 +1,30 @@
+/**
+ * A verification code input form component with enhanced UX features.
+ * Supports 6-digit code input with auto-focus, paste functionality, and keyboard navigation.
+ * Uses Shadcn components for consistent styling.
+ * 
+ * Features:
+ * - Auto-focuses next input on digit entry
+ * - Supports paste functionality for the entire code
+ * - Keyboard navigation (backspace moves to previous input)
+ * - Input validation (numbers only)
+ * - Loading states and error handling
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * <CodeVerificationForm
+ *   code={code}
+ *   setCode={setCode}
+ *   onSubmit={handleSubmit}
+ *   isLoading={isLoading}
+ *   error={error}
+ *   submitText="Verify Code"
+ *   loadingText="Verifying..."
+ * />
+ * ```
+ */
+
 import { useRef } from 'react'
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
@@ -5,13 +32,24 @@ import { Button } from "../ui/button"
 import { Alert, AlertDescription } from "../ui/alert"
 import { AlertCircle } from "lucide-react"
 
+/**
+ * Props for the CodeVerificationForm component
+ * @interface
+ */
 interface CodeVerificationFormProps {
+  /** Array of 6 digits representing the verification code */
   code: string[]
+  /** Function to update the verification code array */
   setCode: (code: string[]) => void
+  /** Form submission handler */
   onSubmit: (e: React.FormEvent) => Promise<void>
+  /** Whether the form is in a loading state */
   isLoading: boolean
+  /** Error message to display, if any */
   error: string | null
+  /** Text to display on the submit button */
   submitText: string
+  /** Text to display on the submit button while loading */
   loadingText: string
 }
 

@@ -1,3 +1,39 @@
+/**
+ * Knowledge Base Page Component
+ * 
+ * Centralized knowledge repository for FAQs, guides, and documentation.
+ * Includes AI-generated content and manually curated articles.
+ * 
+ * Features:
+ * - Searchable FAQ database
+ * - AI-suggested articles
+ * - Category-based navigation
+ * - Quick answer suggestions
+ * - Content management for Managers
+ * 
+ * Content Types:
+ * - Frequently Asked Questions
+ * - Troubleshooting Guides
+ * - Best Practices
+ * - Policy Documents
+ * - AI-Generated Responses
+ * 
+ * Access Levels:
+ * - Public: Basic FAQs and guides
+ * - Client: Role-specific content
+ * - Agent: Internal knowledge base
+ * - Manager: Full content management
+ * 
+ * @example
+ * ```tsx
+ * // Basic route
+ * <Route path="/knowledge" element={<KnowledgeBase />} />
+ * 
+ * // With category
+ * <KnowledgeBase category="troubleshooting" />
+ * ```
+ */
+
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../lib/api'

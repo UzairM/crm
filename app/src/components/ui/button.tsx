@@ -1,9 +1,48 @@
+/**
+ * A versatile button component with multiple variants and sizes.
+ * Built on Radix UI's Slot primitive for composition.
+ * Includes neumorphic styling and proper focus states.
+ * 
+ * Variants:
+ * - default: Standard button with neumorphic shadow
+ * - destructive: Red background for dangerous actions
+ * - outline: Outlined button with hover effect
+ * - secondary: Subtle alternative style
+ * - ghost: No background until hover
+ * - link: Appears as an underlined link
+ * 
+ * Sizes:
+ * - default: Standard size
+ * - sm: Small button
+ * - lg: Large button
+ * - icon: Square button for icons
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * // Default button
+ * <Button>Click me</Button>
+ * 
+ * // Destructive button with small size
+ * <Button variant="destructive" size="sm">Delete</Button>
+ * 
+ * // Icon button
+ * <Button variant="ghost" size="icon">
+ *   <Icon />
+ * </Button>
+ * ```
+ */
+
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "../../lib/utils"
 
+/**
+ * Button variants configuration using class-variance-authority
+ * Defines the available variants and sizes with their corresponding styles
+ */
 const buttonVariants = cva(
   "inline-flex items-center justify-center rounded-md text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
   {
@@ -33,9 +72,14 @@ const buttonVariants = cva(
   }
 )
 
+/**
+ * Props for the Button component
+ * Extends standard button props and variant props
+ */
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
+  /** Whether to render the button as a child component */
   asChild?: boolean
 }
 

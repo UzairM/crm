@@ -21,6 +21,7 @@ Below are guidelines, conventions, and limitations for each primary component.
 ### 1.1 Best Practices
 
 1. Keep Routes Organized:  
+   - Use React Router for routing
    - Separate routes and subroutes (e.g., /dashboard, /manager, /portal) into logical folders.  
    - Use nested routes for more complex flows, but avoid over-nesting that could complicate maintainability.
 
@@ -28,9 +29,11 @@ Below are guidelines, conventions, and limitations for each primary component.
    - Define clear interface types (e.g., Ticket, User, Client).  
    - Avoid using "any" for critical data paths to benefit from compile-time checks and clarity.
 
-3. Leverage Remix Features:  
-   - Utilize Remix's loader/action structure for handling form submissions and data loading.  
-   - Handle data mutations and error scenarios in a consistent, predictable manner.
+3. Data Fetching & State Management:  
+   - Use React Query/SWR for server state management
+   - Use Zustand for client state management
+   - Handle data mutations and error scenarios in a consistent, predictable manner
+   - Implement proper loading and error states
 
 4. Integrate ORY SDK for Login:  
    - Provide a seamless in-app login experience using ORY's React components or custom code calling ORY's APIs.  
@@ -40,15 +43,12 @@ Below are guidelines, conventions, and limitations for each primary component.
    - Use secure cookies to store session tokens, rather than localStorage, to reduce XSS risk.  
    - If you need persistent sessions, implement refresh tokens or ORY-based session extensions.
 
-3. React Features:
-- Utilize React Router for handling routing and data loading.
-- Use Zustand for state management.
-
 ### 1.2 Limitations & Common Pitfalls
 
 1. SEO & Routing:  
-   - Remix supports server-side rendering; ensure any dynamic routes or protected routes are handled properly.  
-   - Large nested routes can impact performance and complexity.
+   - Use React Helmet for meta tags
+   - Implement proper code splitting with React.lazy()
+   - Large nested routes can impact performance and complexity
 
 2. Session Invalidation:  
    - If using cookies or short-lived tokens, handle session expiration gracefully (frontend and backend).  
@@ -57,8 +57,12 @@ Below are guidelines, conventions, and limitations for each primary component.
 3. Large Data Rendering:  
    - Consider pagination or lazy-loading for large volumes of data (tickets, client lists).  
    - Over-fetching can degrade client-side performance.
+   - Use virtualization for long lists
 
-4. Embed or customize ORY's login/registration flows within React.
+4. Performance:
+   - Implement proper memoization (useMemo, useCallback)
+   - Use React.memo for expensive renders
+   - Profile and optimize re-renders
 
 ---
 
@@ -183,7 +187,7 @@ Below are guidelines, conventions, and limitations for each primary component.
 ### 5.1 Best Practices
 
 1. Frontend (ORY SDK)  
-   - Embed or customize ORY's login/registration flows within React Remix.  
+   - Embed or customize ORY's login/registration flows within React.  
    - Store session data securely (e.g., in cookies) and guard routes that require authentication.
 
 2. JWT/Session Validation in Express  

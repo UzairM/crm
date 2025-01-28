@@ -1,3 +1,46 @@
+/**
+ * Root Application Component
+ * 
+ * Main router configuration and layout management for the Finance CRM.
+ * Handles role-based routing, authentication state, and theme provider setup.
+ * 
+ * Features:
+ * - Role-based route protection
+ * - Automatic redirects based on user role
+ * - Error boundary implementation
+ * - Loading state during hydration
+ * - Theme provider integration
+ * 
+ * Route Structure:
+ * 1. Public Routes
+ *    - /login - Authentication page
+ *    - /recovery - Password recovery flow
+ *    - /verification - Email verification flow
+ * 
+ * 2. Client Routes (role='CLIENT')
+ *    - /portal - Client dashboard
+ *    - /portal/create-ticket - New ticket creation
+ *    - /portal/tickets/:ticketId - Client ticket view
+ * 
+ * 3. Agent/Manager Routes (role='AGENT'|'MANAGER')
+ *    - /dashboard - Main dashboard
+ *    - /tickets - Ticket management
+ *    - /tickets/:ticketId - Ticket details
+ * 
+ * 4. Common Routes
+ *    - /settings - User settings (all authenticated users)
+ * 
+ * @example
+ * ```tsx
+ * // Root component usage
+ * ReactDOM.createRoot(document.getElementById('root')!).render(
+ *   <BrowserRouter>
+ *     <App />
+ *   </BrowserRouter>
+ * )
+ * ```
+ */
+
 import { Routes, Route, Navigate } from 'react-router-dom'
 import Dashboard from './pages/Dashboard'
 import Login from './pages/Login'
@@ -16,6 +59,14 @@ import { ErrorBoundary } from 'react-error-boundary'
 import { ThemeProvider } from './components/ThemeProvider'
 import { RootLayout } from './components/layout/RootLayout'
 
+/**
+ * Error Fallback Component
+ * 
+ * Displays a user-friendly error message when a route encounters an error.
+ * Used within ErrorBoundary components to gracefully handle route-level errors.
+ * 
+ * @param error - The error object caught by the error boundary
+ */
 function ErrorFallback({ error }: { error: Error }) {
   console.error('Error in route:', error)
   return (
@@ -26,6 +77,25 @@ function ErrorFallback({ error }: { error: Error }) {
   )
 }
 
+/**
+ * Main Application Component
+ * 
+ * Manages the application's routing logic and high-level state.
+ * Handles authentication state, role-based redirects, and route protection.
+ * 
+ * State Management:
+ * - Uses useAuthStore for user authentication state
+ * - Uses useHydrated to ensure auth state is loaded from storage
+ * 
+ * Route Protection:
+ * - Public routes: login, recovery, verification
+ * - Protected routes: wrapped in ProtectedRoute component
+ * - Role-specific access control
+ * 
+ * Error Handling:
+ * - ErrorBoundary components for critical routes
+ * - Fallback UI for route-level errors
+ */
 function App() {
   const user = useAuthStore(state => state.user)
   const isHydrated = useHydrated()

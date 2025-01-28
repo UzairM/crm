@@ -1,3 +1,25 @@
+/**
+ * A detailed view component for a single ticket.
+ * Displays ticket information, client details, message history, and a message form.
+ * Handles ticket status updates and message management.
+ * 
+ * Features:
+ * - Automatic ticket read status update
+ * - Status toggle (open/closed)
+ * - Client information card
+ * - Message thread with internal notes
+ * - Role-based message filtering
+ * - Message composition form
+ * - Loading and error states
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * // Used with React Router
+ * <Route path="/tickets/:ticketId" element={<TicketDetail />} />
+ * ```
+ */
+
 import { useEffect, useState, useCallback } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { Ticket, TicketMessage } from '../../types/ticket'
@@ -12,9 +34,16 @@ import { Button } from '../ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Badge } from '../ui/badge'
 
+/**
+ * Interface for client information displayed in the sidebar
+ * @interface
+ */
 interface Client {
+  /** Unique identifier for the client */
   id: number
+  /** Client's full name */
   name: string
+  /** Client's email address */
   email: string
 }
 

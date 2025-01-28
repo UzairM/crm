@@ -1,3 +1,49 @@
+/**
+ * A composable dialog component built on Radix UI's Dialog primitive.
+ * Features a neumorphic design with animations and proper focus management.
+ * 
+ * Components:
+ * - Dialog: Root component that manages dialog state
+ * - DialogTrigger: Button that opens the dialog
+ * - DialogContent: The dialog box content with overlay
+ * - DialogHeader: Container for title and description
+ * - DialogFooter: Container for action buttons
+ * - DialogTitle: Dialog heading with proper styling
+ * - DialogDescription: Secondary text below title
+ * - DialogClose: Close button with icon
+ * 
+ * Features:
+ * - Animated transitions
+ * - Keyboard navigation (Esc to close)
+ * - Focus trap within dialog
+ * - Screen reader support
+ * - Responsive layout
+ * - Neumorphic styling
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * <Dialog>
+ *   <DialogTrigger>Open Dialog</DialogTrigger>
+ *   <DialogContent>
+ *     <DialogHeader>
+ *       <DialogTitle>Dialog Title</DialogTitle>
+ *       <DialogDescription>
+ *         This is a description of the dialog's purpose.
+ *       </DialogDescription>
+ *     </DialogHeader>
+ *     <div>Main content goes here</div>
+ *     <DialogFooter>
+ *       <Button onClick={() => {}}>Action</Button>
+ *       <DialogClose asChild>
+ *         <Button variant="outline">Cancel</Button>
+ *       </DialogClose>
+ *     </DialogFooter>
+ *   </DialogContent>
+ * </Dialog>
+ * ```
+ */
+
 "use client"
 
 import * as React from "react"
@@ -6,14 +52,22 @@ import { X } from "lucide-react"
 
 import { cn } from "../../lib/utils"
 
+/** Root dialog component */
 const Dialog = DialogPrimitive.Root
 
+/** Button that triggers the dialog to open */
 const DialogTrigger = DialogPrimitive.Trigger
 
+/** Portal for rendering dialog outside of parent DOM hierarchy */
 const DialogPortal = DialogPrimitive.Portal
 
+/** Button to close the dialog */
 const DialogClose = DialogPrimitive.Close
 
+/**
+ * Semi-transparent overlay behind the dialog
+ * Animates in/out with the dialog
+ */
 const DialogOverlay = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
@@ -29,6 +83,10 @@ const DialogOverlay = React.forwardRef<
 ))
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 
+/**
+ * Main dialog content container
+ * Includes animations, positioning, and close button
+ */
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
@@ -54,6 +112,10 @@ const DialogContent = React.forwardRef<
 ))
 DialogContent.displayName = DialogPrimitive.Content.displayName
 
+/**
+ * Container for dialog title and description
+ * Centers content on mobile, left-aligns on desktop
+ */
 const DialogHeader = ({
   className,
   ...props
@@ -68,6 +130,10 @@ const DialogHeader = ({
 )
 DialogHeader.displayName = "DialogHeader"
 
+/**
+ * Container for dialog action buttons
+ * Stacks vertically on mobile, horizontal on desktop
+ */
 const DialogFooter = ({
   className,
   ...props
@@ -82,6 +148,10 @@ const DialogFooter = ({
 )
 DialogFooter.displayName = "DialogFooter"
 
+/**
+ * Main heading of the dialog
+ * Uses large text with proper spacing
+ */
 const DialogTitle = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Title>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
@@ -97,6 +167,10 @@ const DialogTitle = React.forwardRef<
 ))
 DialogTitle.displayName = DialogPrimitive.Title.displayName
 
+/**
+ * Secondary text providing more context
+ * Uses muted color for visual hierarchy
+ */
 const DialogDescription = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Description>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>

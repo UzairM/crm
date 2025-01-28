@@ -1,3 +1,30 @@
+/**
+ * Dashboard Page Component
+ * 
+ * Main dashboard interface that adapts based on user role (Agent, Manager, Client).
+ * Displays relevant information and actions for each user type.
+ * 
+ * Features:
+ * - Role-based content display
+ * - Ticket overview and statistics
+ * - Quick actions for ticket management
+ * - Real-time updates for ticket status
+ * - Performance metrics for Managers
+ * 
+ * Views by Role:
+ * - Agent: Displays assigned tickets, unread messages, and pending tasks
+ * - Manager: Shows team performance, SLA metrics, and system health
+ * - Client: Presents active tickets and recent communications
+ * 
+ * @example
+ * ```tsx
+ * // Protected route in router
+ * <ProtectedRoute path="/dashboard">
+ *   <Dashboard />
+ * </ProtectedRoute>
+ * ```
+ */
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card"
 import { BarChart3, Users, Ticket, Settings } from "lucide-react"
 

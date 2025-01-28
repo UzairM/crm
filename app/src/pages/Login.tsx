@@ -1,3 +1,30 @@
+/**
+ * Login Page Component
+ * 
+ * Handles user authentication using ORY's login flow.
+ * Integrates with the ORY SDK to provide a secure, customizable login experience.
+ * 
+ * Features:
+ * - Email/password authentication
+ * - Error handling and validation
+ * - Automatic redirect after successful login
+ * - Integration with ORY's authentication flow
+ * - Responsive design with neumorphic styling
+ * 
+ * Flow:
+ * 1. Component mounts and initializes ORY login flow
+ * 2. User enters credentials
+ * 3. On submit, credentials are sent to ORY
+ * 4. Success: User is redirected to dashboard
+ * 5. Error: Appropriate error message is displayed
+ * 
+ * @example
+ * ```tsx
+ * // In router configuration
+ * <Route path="/login" element={<Login />} />
+ * ```
+ */
+
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { ory } from '../lib/ory'

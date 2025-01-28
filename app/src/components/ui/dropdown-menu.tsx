@@ -1,3 +1,65 @@
+/**
+ * A composable dropdown menu component built on Radix UI's Dropdown Menu primitive,
+ * featuring a neumorphic design with support for items, checkboxes, radio groups,
+ * sub-menus, and keyboard navigation.
+ * 
+ * Components included:
+ * - DropdownMenu: Root container for the dropdown menu
+ * - DropdownMenuTrigger: Button that triggers the dropdown
+ * - DropdownMenuContent: Container for dropdown items
+ * - DropdownMenuItem: Individual menu item
+ * - DropdownMenuCheckboxItem: Checkbox menu item
+ * - DropdownMenuRadioItem: Radio menu item
+ * - DropdownMenuLabel: Label for grouping items
+ * - DropdownMenuSeparator: Visual separator between items
+ * - DropdownMenuShortcut: Keyboard shortcut display
+ * - DropdownMenuGroup: Group of menu items
+ * - DropdownMenuSub: Nested sub-menu
+ * - DropdownMenuSubTrigger: Trigger for sub-menu
+ * - DropdownMenuSubContent: Content for sub-menu
+ * - DropdownMenuRadioGroup: Group of radio items
+ * 
+ * Features:
+ * - Neumorphic shadow styling with subtle hover states
+ * - Keyboard navigation support (arrow keys, Enter, Space)
+ * - Type-ahead functionality for quick item selection
+ * - Sub-menu support with automatic positioning
+ * - Checkbox and radio selection states
+ * - Animated transitions for opening/closing
+ * - Screen reader announcements
+ * - Keyboard shortcut display
+ * - Mobile-friendly touch interactions
+ * 
+ * Example usage:
+ * ```tsx
+ * <DropdownMenu>
+ *   <DropdownMenuTrigger>Open Menu</DropdownMenuTrigger>
+ *   <DropdownMenuContent>
+ *     <DropdownMenuItem>
+ *       New Tab
+ *       <DropdownMenuShortcut>⌘T</DropdownMenuShortcut>
+ *     </DropdownMenuItem>
+ *     <DropdownMenuSeparator />
+ *     <DropdownMenuCheckboxItem checked={isEnabled} onCheckedChange={setIsEnabled}>
+ *       Show Toolbar
+ *     </DropdownMenuCheckboxItem>
+ *     <DropdownMenuSub>
+ *       <DropdownMenuSubTrigger>More Tools</DropdownMenuSubTrigger>
+ *       <DropdownMenuSubContent>
+ *         <DropdownMenuItem>Developer Tools</DropdownMenuItem>
+ *         <DropdownMenuItem>Extensions</DropdownMenuItem>
+ *       </DropdownMenuSubContent>
+ *     </DropdownMenuSub>
+ *     <DropdownMenuSeparator />
+ *     <DropdownMenuRadioGroup value={theme} onValueChange={setTheme}>
+ *       <DropdownMenuRadioItem value="light">Light</DropdownMenuRadioItem>
+ *       <DropdownMenuRadioItem value="dark">Dark</DropdownMenuRadioItem>
+ *     </DropdownMenuRadioGroup>
+ *   </DropdownMenuContent>
+ * </DropdownMenu>
+ * ```
+ */
+
 "use client"
 
 import * as React from "react"
@@ -18,6 +80,9 @@ const DropdownMenuSub = DropdownMenuPrimitive.Sub
 
 const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup
 
+/**
+ * SubTrigger component for nested dropdown menus with chevron indicator
+ */
 const DropdownMenuSubTrigger = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.SubTrigger>,
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubTrigger> & {
@@ -40,6 +105,9 @@ const DropdownMenuSubTrigger = React.forwardRef<
 DropdownMenuSubTrigger.displayName =
   DropdownMenuPrimitive.SubTrigger.displayName
 
+/**
+ * Content container for sub-menus with animations and positioning
+ */
 const DropdownMenuSubContent = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.SubContent>,
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubContent>

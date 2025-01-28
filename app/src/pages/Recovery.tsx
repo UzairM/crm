@@ -1,3 +1,40 @@
+/**
+ * Password Recovery Page Component
+ * 
+ * Handles the password recovery flow using ORY's recovery feature.
+ * Provides a secure way for users to reset their passwords.
+ * 
+ * Features:
+ * - Email-based recovery flow
+ * - Secure token validation
+ * - Password reset form
+ * - Error handling
+ * - Success confirmation
+ * 
+ * Flow Steps:
+ * 1. User initiates recovery with email
+ * 2. System sends recovery link
+ * 3. User clicks link and lands on this page
+ * 4. Token validation occurs
+ * 5. User sets new password
+ * 6. Redirect to login on success
+ * 
+ * Security:
+ * - Implements ORY's secure recovery flow
+ * - Validates recovery tokens
+ * - Enforces password requirements
+ * - Rate limits attempts
+ * 
+ * @example
+ * ```tsx
+ * // In router configuration
+ * <Route path="/recovery" element={<Recovery />} />
+ * 
+ * // With return URL
+ * <Recovery returnTo="/login" />
+ * ```
+ */
+
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card"

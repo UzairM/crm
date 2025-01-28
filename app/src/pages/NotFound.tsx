@@ -1,3 +1,31 @@
+/**
+ * Not Found (404) Page Component
+ * 
+ * Custom 404 error page that provides a user-friendly experience when
+ * accessing non-existent routes or resources.
+ * 
+ * Features:
+ * - Clear error messaging
+ * - Navigation assistance
+ * - Return to safety options
+ * - Maintains app theme and branding
+ * 
+ * User Experience:
+ * - Explains the error in simple terms
+ * - Provides quick links to main sections
+ * - Offers search functionality (optional)
+ * - Maintains consistent navigation
+ * 
+ * @example
+ * ```tsx
+ * // In router as catch-all
+ * <Route path="*" element={<NotFound />} />
+ * 
+ * // With custom message
+ * <NotFound message="The ticket you're looking for doesn't exist" />
+ * ```
+ */
+
 import { Link } from 'react-router-dom'
 import { Button } from '../components/ui/button'
 import { ArrowLeft } from 'lucide-react'

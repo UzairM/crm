@@ -1,3 +1,30 @@
+/**
+ * Client Portal Page Component
+ * 
+ * Secure portal interface for clients to manage their tickets and communications.
+ * Provides a restricted view of the CRM system tailored for client access.
+ * 
+ * Features:
+ * - View and manage personal tickets
+ * - Create new support requests
+ * - Track ticket status and updates
+ * - Access communication history
+ * - View relevant documents and FAQs
+ * 
+ * Security:
+ * - Restricted to users with 'Client' role
+ * - Only shows data relevant to the logged-in client
+ * - Enforces data privacy and access controls
+ * 
+ * @example
+ * ```tsx
+ * // Protected client route
+ * <ProtectedRoute path="/portal" roles={['Client']}>
+ *   <ClientPortal />
+ * </ProtectedRoute>
+ * ```
+ */
+
 import { useNavigate } from 'react-router-dom'
 import { Button } from '../components/ui/button'
 import { PlusCircle } from 'lucide-react'

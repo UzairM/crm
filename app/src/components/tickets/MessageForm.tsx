@@ -1,3 +1,28 @@
+/**
+ * A form component for adding messages or internal notes to a ticket.
+ * Supports both client-facing replies and internal notes (for Agents/Managers only).
+ * Uses Shadcn components for consistent styling and accessibility.
+ * 
+ * Features:
+ * - Text area for message input
+ * - Toggle for internal notes (Agents/Managers only)
+ * - Loading states during submission
+ * - Error handling and display
+ * - Role-based UI adaptation
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * <MessageForm
+ *   ticketId={123}
+ *   onMessageSent={() => {
+ *     // Refresh ticket messages
+ *     refetchMessages()
+ *   }}
+ * />
+ * ```
+ */
+
 import { useState } from 'react'
 import { api } from '../../lib/api'
 import { useAuthStore } from '../../stores/auth'
@@ -6,8 +31,14 @@ import { Textarea } from '../ui/textarea'
 import { Checkbox } from '../ui/checkbox'
 import { Label } from '../ui/label'
 
+/**
+ * Props for the MessageForm component
+ * @interface
+ */
 interface MessageFormProps {
+  /** ID of the ticket to add the message to */
   ticketId: number
+  /** Callback function to execute after a message is successfully sent */
   onMessageSent: () => void
 }
 

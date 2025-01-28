@@ -1,3 +1,40 @@
+/**
+ * A global toast notification container component.
+ * Renders all active toasts from the toast store with consistent styling.
+ * 
+ * Features:
+ * - Automatic toast rendering from global store
+ * - Success variant styling by default
+ * - Support for title and description
+ * - Optional action buttons
+ * - Close button included
+ * - Proper viewport positioning
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * // Add to your app's root layout
+ * export default function RootLayout() {
+ *   return (
+ *     <html>
+ *       <body>
+ *         {children}
+ *         <Toaster />
+ *       </body>
+ *     </html>
+ *   )
+ * }
+ * 
+ * // Show a toast from anywhere in your app
+ * const { toast } = useToast()
+ * toast({
+ *   title: "Success!",
+ *   description: "Your changes have been saved.",
+ *   action: <ToastAction>Undo</ToastAction>
+ * })
+ * ```
+ */
+
 import {
   Toast,
   ToastClose,

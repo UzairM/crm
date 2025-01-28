@@ -1,3 +1,27 @@
+/**
+ * A list view component for displaying and filtering tickets.
+ * Provides status and unread filters, and handles ticket navigation.
+ * Adapts its behavior based on user role (Client vs Agent/Manager).
+ * 
+ * Features:
+ * - Status filtering (All, Open, Closed)
+ * - Unread filter toggle
+ * - URL-based filter state
+ * - Visual indicators for unread tickets
+ * - Role-based navigation paths
+ * - Loading and error states
+ * - Empty state handling
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * // Used with React Router
+ * <Route path="/tickets" element={<TicketList />} />
+ * // Or for client portal
+ * <Route path="/portal/tickets" element={<TicketList />} />
+ * ```
+ */
+
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Ticket, TicketStatus } from '../../types/ticket'

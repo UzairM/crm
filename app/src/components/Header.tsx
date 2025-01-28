@@ -1,3 +1,15 @@
+/**
+ * Main header component for the application's navigation bar.
+ * Displays logo, user menu, theme toggle and navigation links based on user role.
+ * Handles user logout and theme switching functionality.
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * <Header />
+ * ```
+ */
+
 import { useAuthStore } from '../stores/auth'
 import { ory } from '../lib/ory'
 import { Button } from "./ui/button"
@@ -8,6 +20,10 @@ import { Link, useLocation, useNavigate } from "react-router-dom"
 import { ThemeToggle } from './ThemeToggle'
 import { useThemeStore } from '../stores/theme'
 
+/**
+ * Header component that provides navigation and user controls
+ * Includes theme toggle, settings access, and user menu with logout
+ */
 export function Header() {
   const user = useAuthStore((state) => state.user)
   const setUser = useAuthStore((state) => state.setUser)
@@ -16,6 +32,12 @@ export function Header() {
   const location = useLocation()
   const navigate = useNavigate()
 
+  /**
+   * Handles user logout process
+   * Clears local auth state and redirects to login page
+   * @async
+   * @returns {Promise<void>}
+   */
   const handleLogout = async () => {
     try {
       // Create a logout flow

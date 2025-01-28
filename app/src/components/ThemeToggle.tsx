@@ -1,3 +1,15 @@
+/**
+ * A button component that toggles between light and dark themes.
+ * Uses Lucide icons to show sun/moon based on current theme state.
+ * Includes proper accessibility labels and smooth transitions.
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * <ThemeToggle />
+ * ```
+ */
+
 import { Moon, Sun } from 'lucide-react'
 import { Button } from './ui/button'
 import { useThemeStore } from '../stores/theme'

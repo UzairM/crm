@@ -1,3 +1,51 @@
+/**
+ * A neumorphic checkbox component built on Radix UI's Checkbox primitive.
+ * Provides an accessible and stylish way to capture boolean input.
+ * 
+ * Features:
+ * - Neumorphic shadow styling
+ * - Animated check mark
+ * - Focus visible states
+ * - Disabled state handling
+ * - Keyboard navigation support
+ * - Screen reader support
+ * - Form control integration
+ * 
+ * States:
+ * - Unchecked (default)
+ * - Checked (with animated check mark)
+ * - Disabled (reduced opacity)
+ * - Focused (ring outline)
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * // Basic checkbox
+ * <Checkbox />
+ * 
+ * // Checkbox with label
+ * <div className="flex items-center space-x-2">
+ *   <Checkbox id="terms" />
+ *   <label
+ *     htmlFor="terms"
+ *     className="text-sm font-medium leading-none"
+ *   >
+ *     Accept terms and conditions
+ *   </label>
+ * </div>
+ * 
+ * // Controlled checkbox
+ * const [checked, setChecked] = useState(false)
+ * <Checkbox
+ *   checked={checked}
+ *   onCheckedChange={setChecked}
+ * />
+ * 
+ * // Disabled checkbox
+ * <Checkbox disabled />
+ * ```
+ */
+
 "use client"
 
 import * as React from "react"
@@ -6,6 +54,10 @@ import { Check } from "lucide-react"
 
 import { cn } from "../../lib/utils"
 
+/**
+ * Checkbox component with neumorphic styling
+ * Built on Radix UI's Checkbox primitive for accessibility
+ */
 const Checkbox = React.forwardRef<
   React.ElementRef<typeof CheckboxPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>

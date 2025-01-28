@@ -119,11 +119,3 @@ Add a comprehensive knowledge base to the CRM system, allowing managers to creat
   - Subscribe to category/article changes
   - Email digests of new articles
 
-## Notes
-- All components should follow the established theme guidelines (dark neutrals + teal/gold accents)
-- Ensure proper role-based access control throughout
-- Maintain consistent typography and spacing
-- Keep files under 250 lines for AI compatibility
-- Follow existing code style and best practices
-- Use transactions for database operations
-- Document all functions and components 

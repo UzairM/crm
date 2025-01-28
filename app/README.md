@@ -1,40 +1,22 @@
-# Welcome to Remix!
+# Finance CRM Frontend
 
-- 📖 [Remix docs](https://remix.run/docs)
+## Overview
+This is the React frontend for the Finance CRM system. It provides a modern, responsive interface for managing tickets, clients, and AI-assisted responses.
 
 ## Development
+- Run `npm install` to install dependencies
+- Run `npm run dev` to start the development server
+- Visit `http://localhost:3000` to view the app
 
-Run the dev server:
+## Features
+- TypeScript + React for type-safe development
+- Tailwind CSS for styling
+- React Query/SWR for data fetching
+- Zustand for state management
+- ORY SDK for authentication
 
-```shellscript
-npm run dev
-```
-
-## Deployment
-
-First, build your app for production:
-
-```sh
-npm run build
-```
-
-Then run the app in production mode:
-
-```sh
-npm start
-```
-
-Now you'll need to pick a host to deploy it to.
-
-### DIY
-
-If you're familiar with deploying Node applications, the built-in Remix app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-- `build/server`
-- `build/client`
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever css framework you prefer. See the [Vite docs on css](https://vitejs.dev/guide/features.html#css) for more information.
+## Documentation
+For more details, see:
+- [UI Rules](../docs/ui-rules.md)
+- [Theme Rules](../docs/theme-rules.md)
+- [Tech Stack Rules](../docs/tech-stack-rules.md)

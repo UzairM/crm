@@ -1,3 +1,40 @@
+/**
+ * Email Verification Page Component
+ * 
+ * Handles the email verification flow using ORY's verification feature.
+ * Ensures users verify their email addresses for account security.
+ * 
+ * Features:
+ * - Email verification flow
+ * - Resend verification option
+ * - Token validation
+ * - Error handling
+ * - Success confirmation
+ * 
+ * Flow Steps:
+ * 1. User receives verification email
+ * 2. Clicks verification link
+ * 3. Lands on this page
+ * 4. System validates verification token
+ * 5. Updates verification status
+ * 6. Redirects to appropriate page
+ * 
+ * States:
+ * - Pending: Waiting for token validation
+ * - Success: Email verified
+ * - Error: Invalid/expired token
+ * - Resend: New verification email requested
+ * 
+ * @example
+ * ```tsx
+ * // In router configuration
+ * <Route path="/verification" element={<Verification />} />
+ * 
+ * // With success redirect
+ * <Verification redirectTo="/dashboard" />
+ * ```
+ */
+
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card"

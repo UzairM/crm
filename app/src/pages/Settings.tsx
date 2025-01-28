@@ -1,3 +1,47 @@
+/**
+ * Settings Page Component
+ * 
+ * Configuration interface for system-wide settings and user preferences.
+ * Provides role-based access to different settings sections.
+ * 
+ * Features:
+ * - User profile management
+ * - System configuration (Manager only)
+ * - SLA settings management
+ * - Notification preferences
+ * - Theme customization
+ * 
+ * Settings Sections:
+ * 1. Profile
+ *    - Personal information
+ *    - Password change
+ *    - Contact preferences
+ * 
+ * 2. System (Manager only)
+ *    - SLA configuration
+ *    - Role management
+ *    - System defaults
+ * 
+ * 3. Notifications
+ *    - Email preferences
+ *    - In-app notifications
+ *    - Alert thresholds
+ * 
+ * 4. Display
+ *    - Theme selection
+ *    - Layout options
+ *    - Language preferences
+ * 
+ * @example
+ * ```tsx
+ * // Basic settings route
+ * <Route path="/settings" element={<Settings />} />
+ * 
+ * // With specific section
+ * <Settings defaultSection="profile" />
+ * ```
+ */
+
 import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card"
 import { Button } from "../components/ui/button"
@@ -10,6 +54,8 @@ import { Alert, AlertDescription } from "../components/ui/alert"
 import { CheckCircle2, AlertCircle } from "lucide-react"
 import type { UiNodeInputAttributes, UpdateSettingsFlowBody, SettingsFlow, UiNode } from '@ory/client'
 import type { AxiosError, AxiosResponse } from 'axios'
+import { validatePassword } from '../lib/utils'
+import { PasswordRequirements } from '../components/ui/PasswordRequirements'
 
 interface Identity {
   id: string
@@ -31,6 +77,7 @@ export default function Settings() {
   const [isChangingPassword, setIsChangingPassword] = useState(false)
   const [passwordError, setPasswordError] = useState<string | null>(null)
   const [passwordSuccess, setPasswordSuccess] = useState(false)
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false)
   const session = useAuthStore((state) => state.session)
 
   useEffect(() => {
@@ -73,8 +120,9 @@ export default function Settings() {
       return
     }
 
-    if (newPassword.length < 8) {
-      setPasswordError("Password must be at least 8 characters long")
+    const validation = validatePassword(newPassword)
+    if (!validation.isValid) {
+      setPasswordError(validation.error)
       return
     }
 
@@ -206,15 +254,24 @@ export default function Settings() {
               )}
               <div className="space-y-2">
                 <Label htmlFor="new-password">New Password</Label>
-                <Input
-                  id="new-password"
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  className="border-input focus:ring-2 focus:ring-ring"
-                  required
-                  minLength={8}
-                />
+                <div className="flex flex-col">
+                  <Input
+                    id="new-password"
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    onFocus={() => setIsPasswordFocused(true)}
+                    onBlur={() => setIsPasswordFocused(false)}
+                    className="border-input focus:ring-2 focus:ring-ring w-full"
+                    required
+                    minLength={8}
+                    placeholder="Enter a strong password"
+                  />
+                  <PasswordRequirements 
+                    password={newPassword} 
+                    isVisible={isPasswordFocused || newPassword.length > 0}
+                  />
+                </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="confirm-password">Confirm Password</Label>
@@ -223,9 +280,10 @@ export default function Settings() {
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="border-input focus:ring-2 focus:ring-ring"
+                  className="border-input focus:ring-2 focus:ring-ring w-full"
                   required
                   minLength={8}
+                  placeholder="Re-enter your password"
                 />
               </div>
               <Button 

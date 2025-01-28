@@ -1,8 +1,35 @@
+/**
+ * A countdown timer component for email verification code resend functionality.
+ * Displays a circular progress indicator and a resend button that becomes active after the countdown.
+ * 
+ * Features:
+ * - 60-second countdown timer with visual progress
+ * - Circular progress indicator
+ * - Automatic timer reset on resend
+ * - Loading state handling
+ * - Accessible button states
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * <ResendTimer
+ *   onResend={handleResendCode}
+ *   isResending={isResending}
+ * />
+ * ```
+ */
+
 import { useState, useEffect } from 'react'
 import { Button } from '../ui/button'
 
+/**
+ * Props for the ResendTimer component
+ * @interface
+ */
 interface ResendTimerProps {
+  /** Function to call when the user requests a new code */
   onResend: () => Promise<void>
+  /** Whether a new code is currently being sent */
   isResending: boolean
 }
 

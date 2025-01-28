@@ -1,3 +1,17 @@
+/**
+ * Protected route component that handles authentication and role-based access control.
+ * Verifies user session and role permissions before rendering child components.
+ * Redirects to login if session is invalid or unauthorized.
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * <ProtectedRoute allowedRoles={['ADMIN', 'MANAGER']}>
+ *   <DashboardPage />
+ * </ProtectedRoute>
+ * ```
+ */
+
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useState, useEffect, useRef } from 'react'
 import { ory } from '../lib/ory'
@@ -6,11 +20,22 @@ import { useAuthStore } from '../stores/auth'
 import { useHydrated } from '../hooks/useHydrated'
 import { getMe } from '../lib/api'
 
+/**
+ * Props for the ProtectedRoute component
+ * @interface
+ */
 interface ProtectedRouteProps {
-  children: React.ReactNode
-  allowedRoles?: string[]
+  /** Child components to render when route is accessible */
+  children: React.ReactNode;
+  /** List of roles allowed to access this route */
+  allowedRoles?: string[];
 }
 
+/**
+ * Protected route wrapper component
+ * Handles authentication verification and role-based access control
+ * Shows loading state during checks and redirects if unauthorized
+ */
 export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
   const location = useLocation()
   const navigate = useNavigate()

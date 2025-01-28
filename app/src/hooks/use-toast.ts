@@ -1,5 +1,38 @@
 "use client"
 
+/**
+ * Toast notification system using Zustand for state management
+ * Provides a simple interface for showing toast messages with different variants
+ * 
+ * Features:
+ * - Multiple toast variants (default, destructive, success)
+ * - Automatic dismissal
+ * - Custom duration support
+ * - Toast queue management
+ * - Accessible toast notifications
+ * 
+ * @example
+ * ```tsx
+ * // Basic usage
+ * const { toast } = useToast()
+ * toast({ title: "Success!", description: "Operation completed" })
+ * 
+ * // With variant
+ * toast({
+ *   variant: "destructive",
+ *   title: "Error",
+ *   description: "Something went wrong"
+ * })
+ * 
+ * // Custom duration
+ * toast({
+ *   title: "Quick note",
+ *   description: "This will disappear fast",
+ *   duration: 2000 // 2 seconds
+ * })
+ * ```
+ */
+
 // Inspired by react-hot-toast library
 import * as React from "react"
 

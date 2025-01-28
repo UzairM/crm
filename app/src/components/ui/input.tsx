@@ -1,9 +1,42 @@
 "use client"
 
+/**
+ * A styled input component with neumorphic design.
+ * Extends native input element with consistent styling and focus states.
+ * Includes shadow effects and proper transitions.
+ * 
+ * Features:
+ * - Neumorphic shadow styling
+ * - Consistent border and focus states
+ * - File input styling support
+ * - Disabled state handling
+ * - Full width by default
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * // Basic text input
+ * <Input type="text" placeholder="Enter your name" />
+ * 
+ * // Password input
+ * <Input type="password" />
+ * 
+ * // Disabled input
+ * <Input disabled value="Can't edit this" />
+ * 
+ * // File input
+ * <Input type="file" accept="image/*" />
+ * ```
+ */
+
 import * as React from "react"
 
 import { cn } from "../../lib/utils"
 
+/**
+ * Props interface for Input component
+ * Extends all native input HTML attributes
+ */
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {}
 

@@ -1,3 +1,37 @@
+/**
+ * Create Ticket Page Component
+ * 
+ * Form interface for creating new support tickets in the CRM system.
+ * Handles ticket creation for both Agents (on behalf of clients) and Clients directly.
+ * 
+ * Features:
+ * - Dynamic form validation
+ * - Client selection for Agents
+ * - Rich text editor for ticket description
+ * - File attachment support
+ * - Priority and category selection
+ * 
+ * Workflow:
+ * 1. User fills required ticket details
+ * 2. Form validates input
+ * 3. On submit, creates ticket in system
+ * 4. Redirects to ticket detail view
+ * 
+ * Access Control:
+ * - Agents can create tickets for any client
+ * - Clients can only create tickets for themselves
+ * - Managers have full access to all features
+ * 
+ * @example
+ * ```tsx
+ * // In router configuration
+ * <Route path="/tickets/create" element={<CreateTicket />} />
+ * 
+ * // Usage with client ID
+ * <CreateTicket clientId="123" />
+ * ```
+ */
+
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../stores/auth'

@@ -46,7 +46,7 @@ This document defines the primary look and feel (Minimalist + slight Neumorphism
 
 ## 6. Compatibility with Tech Stack
 
-• Adhere to the CSS structure set in Remix + Tailwind or standard PostCSS if used.  
+• Adhere to the CSS structure set in React + Tailwind or standard PostCSS if used.  
 • Respect user roles from the Node CRM, ensuring consistent theme elements in dashboards, portals, and AI suggestion areas.  
 • Light on heavy assets; reduce memory overhead for a smoother experience across devices.
 
