@@ -80,19 +80,19 @@
 
 /* Neumorphic styles */
 .neu-shadow {
-  @apply shadow-neu transition-shadow duration-200;
+  @apply shadow-neu-sm transition-shadow duration-200;
 }
 
 .dark .neu-shadow {
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2), -5px -5px 10px rgba(255, 255, 255, 0.03);
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2), -3px -3px 6px rgba(255, 255, 255, 0.02);
 }
 
 .neu-shadow:hover {
-  @apply shadow-neu-sm;
+  @apply shadow-neu;
 }
 
 .dark .neu-shadow:hover {
-  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2), -3px -3px 6px rgba(255, 255, 255, 0.03);
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2), -5px -5px 10px rgba(255, 255, 255, 0.02);
 }
 
 .neu-shadow:active {
@@ -100,7 +100,7 @@
 }
 
 .dark .neu-shadow:active {
-  box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.2), inset -3px -3px 6px rgba(255, 255, 255, 0.03);
+  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.2), inset -2px -2px 4px rgba(255, 255, 255, 0.02);
 }
 
 /* Typography */
@@ -115,17 +115,17 @@
 
 @layer utilities {
   .shadow-soft {
-    box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.05),
-                -6px -6px 12px rgba(255, 255, 255, 0.05);
+    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.05),
+                -3px -3px 6px rgba(255, 255, 255, 0.05);
   }
   
   .shadow-soft-success {
-    box-shadow: 6px 6px 12px rgba(16, 185, 129, 0.05),
-                -6px -6px 12px rgba(255, 255, 255, 0.1);
+    box-shadow: 3px 3px 6px rgba(16, 185, 129, 0.05),
+                -3px -3px 6px rgba(255, 255, 255, 0.1);
   }
 
   .shadow-soft-destructive {
-    box-shadow: 6px 6px 12px rgba(239, 68, 68, 0.05),
-                -6px -6px 12px rgba(255, 255, 255, 0.05);
+    box-shadow: 3px 3px 6px rgba(239, 68, 68, 0.05),
+                -3px -3px 6px rgba(255, 255, 255, 0.05);
   }
 } 
