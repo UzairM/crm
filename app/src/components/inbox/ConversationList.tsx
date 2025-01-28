@@ -5,12 +5,20 @@ import {
   Mail,
   Moon,
   ImageIcon,
-  ChevronDown,
   PanelLeftClose,
   PanelRightClose
 } from 'lucide-react'
 import { TicketList } from '../tickets/TicketList'
 import { Conversation } from '../../types/inbox'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select"
+import { Label } from "../ui/label"
+import { Checkbox } from "../ui/checkbox"
 
 interface ConversationListProps {
   isNavExpanded: boolean
@@ -18,9 +26,9 @@ interface ConversationListProps {
   selectedConversation: string | null
   setSelectedConversation: (id: string | null) => void
   filter: string
-  sortBy: string
-  handleFilterChange: () => void
-  handleSortChange: () => void
+  unread: boolean
+  handleFilterChange: (value: string) => void
+  handleUnreadToggle: () => void
   isInbox: boolean
   conversations: Conversation[]
 }
@@ -31,9 +39,9 @@ export function ConversationList({
   selectedConversation,
   setSelectedConversation,
   filter,
-  sortBy,
+  unread,
   handleFilterChange,
-  handleSortChange,
+  handleUnreadToggle,
   isInbox,
   conversations
 }: ConversationListProps) {
@@ -74,21 +82,36 @@ export function ConversationList({
         </div>
         <div className="p-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="h-8 px-3"
-              onClick={handleFilterChange}
+            <Select 
+              defaultValue="OPEN"
+              onValueChange={handleFilterChange}
+              value={filter}
             >
-              {filter} <ChevronDown className="ml-1 h-3 w-3" />
-            </Button>
+              <SelectTrigger className="h-8 px-3">
+                <SelectValue placeholder="Filter tickets" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="OPEN">Open</SelectItem>
+                <SelectItem value="CLOSED">Closed</SelectItem>
+                <SelectItem value="ALL">All</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex items-center">
             <Button 
-              variant="outline" 
+              variant={unread ? "default" : "outline"}
               size="sm" 
-              className="h-8 px-3"
-              onClick={handleSortChange}
+              className={cn(
+                "h-8 px-3 relative",
+                unread && "bg-primary text-primary-foreground hover:bg-primary/90"
+              )}
+              onClick={handleUnreadToggle}
             >
-              {sortBy} <ChevronDown className="ml-1 h-3 w-3" />
+              <Mail className="h-4 w-4 mr-2" />
+              Unread
+              {unread && (
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full" />
+              )}
             </Button>
           </div>
         </div>
@@ -100,6 +123,8 @@ export function ConversationList({
             onTicketSelect={(ticketId: number) => setSelectedConversation(ticketId.toString())}
             selectedTicketId={selectedConversation ? parseInt(selectedConversation) : undefined}
             variant="inbox"
+            filter={filter}
+            unread={unread}
           />
         ) : (
           conversations.map((conv) => (

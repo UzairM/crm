@@ -39,85 +39,66 @@ interface TicketListProps {
   onTicketSelect?: (ticketId: number) => void
   selectedTicketId?: number
   variant?: 'default' | 'inbox'
+  filter?: string
+  unread?: boolean
 }
 
-export function TicketList({ onTicketSelect, selectedTicketId, variant = 'default' }: TicketListProps) {
+export function TicketList({ onTicketSelect, selectedTicketId, variant = 'default', filter = 'OPEN', unread = false }: TicketListProps) {
   const [tickets, setTickets] = useState<Ticket[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
-  const renderCount = useRef(0)
   const user = useAuthStore(state => state.user)
   const session = useAuthStore(state => state.session)
   const mountedRef = useRef(true)
-
-  console.log('TicketList render:', {
-    renderCount: ++renderCount.current,
-    isLoading,
-    error,
-    ticketsCount: tickets.length,
-    hasUser: !!user,
-    hasSession: !!session,
-    userEmail: user?.email
-  })
 
   const fetchTickets = useCallback(async () => {
     if (!mountedRef.current) return
     
     try {
-      console.log('Fetching tickets...')
-      const status = searchParams.get('status')?.toLowerCase()
-      const unread = searchParams.get('unread')
-      
       const params = new URLSearchParams()
-      if (status) params.append('status', status)
-      if (unread === 'true') params.append('unread', 'true')
       
-      console.log('Making API request:', `/api/tickets?${params.toString()}`)
-      const response = await api.get(`/api/tickets?${params.toString()}`)
-      console.log('API response:', response.data)
-
-      if (!mountedRef.current) {
-        console.log('Component unmounted during fetch, abandoning update')
-        return
+      // Use the filter prop instead of searchParams for inbox variant
+      if (variant === 'inbox') {
+        if (filter && filter !== 'ALL') {
+          params.append('status', filter)
+        }
+        if (unread) {
+          params.append('unread', 'true')
+        }
+      } else {
+        const status = searchParams.get('status')?.toUpperCase()
+        if (status && status !== 'ALL') {
+          params.append('status', status)
+        }
+        if (searchParams.get('unread') === 'true') {
+          params.append('unread', 'true')
+        }
       }
-
+      
+      const response = await api.get(`/api/tickets?${params.toString()}`)
+      
+      if (!mountedRef.current) return
+      
       setTickets(response.data)
       setIsLoading(false)
-      console.log('Updated tickets state:', {
-        ticketsCount: response.data.length,
-        isLoading: false
-      })
     } catch (err) {
       console.error('Failed to fetch tickets:', err)
       if (mountedRef.current) {
         setError('Failed to load tickets')
         setIsLoading(false)
-        console.log('Set error state:', {
-          error: 'Failed to load tickets',
-          isLoading: false
-        })
       }
     }
-  }, [searchParams])
+  }, [searchParams, variant, filter, unread])
 
   useEffect(() => {
-    console.log('TicketList mounted')
-    mountedRef.current = true
-
     if (user && session) {
       fetchTickets()
     }
-
-    return () => {
-      console.log('TicketList unmounting')
-      mountedRef.current = false
-    }
-  }, [user, session, fetchTickets])
+  }, [user, session, filter, unread, fetchTickets])
 
   const handleFilterChange = (status: TicketStatus | 'ALL', unread: boolean) => {
-    console.log('Filter change:', { status, unread })
     const params = new URLSearchParams(searchParams)
     if (status) {
       params.set('status', status.toLowerCase())
@@ -143,28 +124,19 @@ export function TicketList({ onTicketSelect, selectedTicketId, variant = 'defaul
   }
 
   if (!user || !session) {
-    console.log('No user or session, showing loading')
     return <LoadingSpinner />
   }
 
   if (isLoading) {
-    console.log('Rendering loading state')
     return <LoadingSpinner />
   }
   
   if (error) {
-    console.log('Rendering error state:', error)
     return <ErrorAlert message={error} />
   }
 
   const currentStatus = searchParams.get('status')?.toUpperCase() as TicketStatus | undefined
   const currentUnread = searchParams.get('unread') === 'true'
-
-  console.log('Rendering ticket list:', {
-    ticketsCount: tickets.length,
-    currentStatus,
-    currentUnread
-  })
 
   if (variant === 'inbox') {
     return (
@@ -176,13 +148,14 @@ export function TicketList({ onTicketSelect, selectedTicketId, variant = 'defaul
             className={cn(
               "w-full text-left p-4",
               "hover:bg-accent/50 transition-colors",
-              selectedTicketId === ticket.id && "bg-accent"
+              selectedTicketId === ticket.id && "bg-accent",
+              !ticket.isRead && "bg-primary/10 border-l-2 border-l-primary"
             )}
           >
             <div className="flex items-start gap-3">
               <div className={cn(
-                "w-8 h-8 rounded-full flex items-center justify-center text-white font-medium",
-                !ticket.isRead ? "bg-primary" : "bg-muted"
+                "w-8 h-8 rounded-full flex items-center justify-center text-white font-medium shadow-sm",
+                !ticket.isRead ? "bg-primary shadow-primary/20" : "bg-muted"
               )}>
                 {ticket.client?.name?.[0] || 'U'}
               </div>
@@ -190,9 +163,14 @@ export function TicketList({ onTicketSelect, selectedTicketId, variant = 'defaul
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     {!ticket.isRead && (
-                      <div className="w-2 h-2 rounded-full bg-primary" />
+                      <div className="w-2 h-2 rounded-full bg-primary shadow-sm shadow-primary/20" />
                     )}
-                    <h3 className="font-medium text-sm truncate">{ticket.subject}</h3>
+                    <h3 className={cn(
+                      "text-sm truncate",
+                      !ticket.isRead ? "font-semibold" : "font-medium"
+                    )}>
+                      {ticket.subject}
+                    </h3>
                   </div>
                   <span className="text-xs text-muted-foreground">
                     {new Date(ticket.createdAt).toLocaleDateString()}
@@ -205,11 +183,6 @@ export function TicketList({ onTicketSelect, selectedTicketId, variant = 'defaul
             </div>
           </button>
         ))}
-        {tickets.length === 0 && (
-          <div className="p-8 text-center text-muted-foreground">
-            No tickets found
-          </div>
-        )}
       </div>
     )
   }

@@ -14,9 +14,9 @@ export default function InboxPage() {
     selectedConversation,
     setSelectedConversation,
     filter,
-    sortBy,
+    unread,
     handleFilterChange,
-    handleSortChange
+    handleUnreadToggle
   } = useConversation()
   const { width: detailsWidth, handleMouseDown, handleKeyDown } = useResizePanel()
 
@@ -32,9 +32,9 @@ export default function InboxPage() {
             selectedConversation={selectedConversation}
             setSelectedConversation={setSelectedConversation}
             filter={filter}
-            sortBy={sortBy}
+            unread={unread}
             handleFilterChange={handleFilterChange}
-            handleSortChange={handleSortChange}
+            handleUnreadToggle={handleUnreadToggle}
             isInbox={isInbox}
             conversations={demoConversations}
           />
