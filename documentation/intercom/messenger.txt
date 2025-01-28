@@ -1,0 +1,129 @@
+Skip to main content
+How the Messenger shows alerts, when you're active, your team's response time and more.
+
+Beth-Ann Sher avatar
+Written by Beth-Ann Sher
+Updated over a year ago
+Table of contents
+When a user contacts you via the Intercom Messenger and you reply, all messages are delivered in real-time. Manual messages you send to users are also delivered in real-time too. This means you can have live conversations with your customers.
+
+ 
+
+ 
+
+Typing indicators, alerts, and sounds in the Intercom Messenger 
+Once you start writing a reply, your customer can see that you're typing. This cue helps them know it's worth waiting around for a reply, and is a fundamental part of having a natural live conversation.
+
+ 
+
+
+We've added little touches to the Intercom Messenger, like sent and delivered sounds, which make it feel more like a modern messaging app. Messages you send to users will arrive with an audio ping, to help draw your customer's attention to your message. 
+
+ 
+
+Note: You can turn the sound off for incoming messages in your Messenger settings. 
+​
+The browser tab title will also change, to help them know they've received a reply if they they are on another tab at the time.
+
+ 
+
+ 
+
+Message 'Seen' states (read receipts)
+These help manage your customers’ expectations about when they should expect a response. When a customer starts a new conversation, their message is marked as "Not yet seen". This first message won’t be marked as "Seen" until a teammate starts typing a reply to the customer. This means your team can view, assign or add notes to new conversations without impacting your customers’ expectations.
+
+ 
+
+Note: Once a teammate replies to a conversation, any subsequent customer replies are marked as "Seen" as soon as any teammate clicks into the composer or starts replying. 
+
+ 
+
+
+Note: It's not currently possible to disable read receipts in the Messenger. 
+
+ 
+
+ 
+
+Team profile 
+When a customer starts a new conversation, your team profile is shown.
+
+ 
+
+
+In the team profile, we try to ensure your users see the teammates most likely to reply to their message. To do this automatically, we use three rules:
+
+We show the three teammates who have most recently replied first to a new in-app conversation in the last week. If only one teammate meets this criteria, we’ll only show one teammate. Likewise, if only two teammates meet this criteria, we’ll only show two teammates. We update this information each time a user loads the Messenger.
+
+If no one meets the above rule, then we show a single teammate who most recently replied first to a new user conversation in the last month.
+
+If no one meets that rule, we show the teammate most recently active in your app, regardless of conversation activity.
+
+You should ensure all your team's avatars are looking good. If you don't have an avatar we will use your initials instead.
+
+ 
+
+ 
+
+Active status
+Teammates' active status appears on their teammate profile. This is a helpful cue for managing customers’ expectations. If a teammate isn't active, their status will appear as "Away".
+
+ 
+
+We consider teammates “active” as long as they have the Intercom web, iOS or Android app open, or if they reply to a conversation from email.  
+
+ 
+
+
+ 
+
+They’ll know when you’re typing too 
+In your team inbox, you can also see when your customers are typing.
+
+ 
+
+We've also added audio alerts when you receive a user reply in a conversation you're assigned to. These alerts currently sound only when you have Intercom open in the conversations tab. We also encourage you to set up mobile and desktop notifications.
+
+ 
+
+ 
+
+See when your customers are active 
+Intercom shows you when your customers are online and active in your app. Now you can start live conversations right from your user list. This is great for welcoming new users, or getting real-time feedback. Your users will get that message inside your app, right away.
+
+ 
+
+When you're in your team's inbox, knowing which customers are online helps you to prioritize who to respond to first. You may choose to send active customers a quick message, just to let them know that you've seen their message and will give them a fuller response later. Or you may choose to engage in live conversations with active customers, so you can get to a speedier resolution of their question.
+
+ 
+
+We go into technical detail on user presence here.
+
+ 
+
+ 
+
+Expected response time 
+While live conversations are great, it's important to manage your customers' expectations when they send you a message, because you're not always going to be available to respond right away. That's why we built the expected response time. You can select it in your Messenger settings. 
+
+ 
+
+This is great for busy periods, or when you know you'll be out of the office. 
+
+ 
+
+ 
+
+What’s next? 
+Now that you now how real-time messaging works, read our best practices or register for our upcoming webinar on how to stay personal at scale.
+
+💡Tip
+Need more help? Get support from our Community Forum
+Find answers and get help from Intercom Support and Community Experts
+
+Related Articles
+Share your expected response time
+Control inbound conversation volume
+Real-time Dashboard
+Set up and customize the Messenger
+Customize Fin AI Agent in the Messenger

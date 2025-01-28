@@ -33,8 +33,15 @@ import { Checkbox } from '../ui/checkbox'
 import { Card, CardContent } from '../ui/card'
 import { Badge } from '../ui/badge'
 import { useAuthStore } from '../../stores/auth'
+import { cn } from '../../lib/utils'
 
-export function TicketList() {
+interface TicketListProps {
+  onTicketSelect?: (ticketId: number) => void
+  selectedTicketId?: number
+  variant?: 'default' | 'inbox'
+}
+
+export function TicketList({ onTicketSelect, selectedTicketId, variant = 'default' }: TicketListProps) {
   const [tickets, setTickets] = useState<Ticket[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
@@ -126,7 +133,9 @@ export function TicketList() {
   }
 
   const handleTicketClick = (ticketId: number) => {
-    if (user?.role === 'CLIENT') {
+    if (onTicketSelect) {
+      onTicketSelect(ticketId)
+    } else if (user?.role === 'CLIENT') {
       navigate(`/portal/tickets/${ticketId}`)
     } else {
       navigate(`/tickets/${ticketId}`)
@@ -156,6 +165,54 @@ export function TicketList() {
     currentStatus,
     currentUnread
   })
+
+  if (variant === 'inbox') {
+    return (
+      <div className="divide-y divide-border/40">
+        {tickets.map((ticket) => (
+          <button
+            key={ticket.id}
+            onClick={() => handleTicketClick(ticket.id)}
+            className={cn(
+              "w-full text-left p-4",
+              "hover:bg-accent/50 transition-colors",
+              selectedTicketId === ticket.id && "bg-accent"
+            )}
+          >
+            <div className="flex items-start gap-3">
+              <div className={cn(
+                "w-8 h-8 rounded-full flex items-center justify-center text-white font-medium",
+                !ticket.isRead ? "bg-primary" : "bg-muted"
+              )}>
+                {ticket.client?.name?.[0] || 'U'}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    {!ticket.isRead && (
+                      <div className="w-2 h-2 rounded-full bg-primary" />
+                    )}
+                    <h3 className="font-medium text-sm truncate">{ticket.subject}</h3>
+                  </div>
+                  <span className="text-xs text-muted-foreground">
+                    {new Date(ticket.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+                <p className="text-sm text-muted-foreground truncate">
+                  {ticket.client?.email}
+                </p>
+              </div>
+            </div>
+          </button>
+        ))}
+        {tickets.length === 0 && (
+          <div className="p-8 text-center text-muted-foreground">
+            No tickets found
+          </div>
+        )}
+      </div>
+    )
+  }
 
   return (
     <div className="grid gap-6">

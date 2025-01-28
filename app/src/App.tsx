@@ -58,6 +58,7 @@ import { LoadingSpinner } from './components/LoadingSpinner'
 import { ErrorBoundary } from 'react-error-boundary'
 import { ThemeProvider } from './components/ThemeProvider'
 import { RootLayout } from './components/layout/RootLayout'
+import InboxPage from './pages/inbox/InboxPage'
 
 /**
  * Error Fallback Component
@@ -174,6 +175,9 @@ function App() {
 
           {/* Verification route */}
           <Route path="/verification" element={<Verification />} />
+
+          {/* Inbox route */}
+          <Route path="/inbox/*" element={<InboxPage />} />
 
           {/* Default redirect - only if no other routes match */}
           <Route path="*" element={

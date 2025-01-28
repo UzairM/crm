@@ -32,6 +32,7 @@ import { useAuthStore } from '../../stores/auth'
 import { Button } from '../ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Badge } from '../ui/badge'
+import { cn } from '../../lib/utils'
 
 /**
  * Interface for client information displayed in the sidebar
@@ -46,8 +47,14 @@ interface Client {
   email: string
 }
 
-export function TicketDetail() {
-  const { ticketId } = useParams()
+interface TicketDetailProps {
+  ticketId?: number | string
+  variant?: 'default' | 'chat'
+}
+
+export function TicketDetail({ ticketId: propTicketId, variant = 'default' }: TicketDetailProps) {
+  const { ticketId: paramTicketId } = useParams()
+  const ticketId = propTicketId?.toString() || paramTicketId
   const [ticket, setTicket] = useState<Ticket | null>(null)
   const [messages, setMessages] = useState<TicketMessage[]>([])
   const [client, setClient] = useState<Client | null>(null)
@@ -56,6 +63,7 @@ export function TicketDetail() {
   const user = useAuthStore(state => state.user)
 
   const fetchTicketData = useCallback(async () => {
+    if (!ticketId) return
     try {
       const [ticketResponse, messagesResponse] = await Promise.all([
         api.get(`/api/tickets/${ticketId}`),
@@ -106,9 +114,100 @@ export function TicketDetail() {
     }
   }
 
+  if (variant === 'chat') {
+    if (isLoading || !ticket) return <LoadingSpinner />
+    if (error) return <ErrorAlert message={error} />
+
+    return (
+      <div className="flex flex-col h-full">
+        <div className="flex-none p-4 border-b border-border/40">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <h3 className="font-medium">{ticket.subject}</h3>
+              <Badge variant={
+                !ticket.isRead ? 'default' :
+                ticket.status === 'NEW' ? 'secondary' :
+                ticket.status === 'OPEN' ? 'outline' :
+                'default'
+              }>
+                {!ticket.isRead ? 'UNREAD' : ticket.status}
+              </Badge>
+            </div>
+            {ticket.status !== 'NEW' && (
+              <Button
+                onClick={toggleTicketStatus}
+                variant={ticket.status === 'OPEN' ? 'destructive' : 'default'}
+                size="sm"
+              >
+                {ticket.status === 'OPEN' ? (
+                  <>
+                    <X className="h-4 w-4 mr-2" />
+                    Close Ticket
+                  </>
+                ) : (
+                  <>
+                    <Check className="h-4 w-4 mr-2" />
+                    Reopen Ticket
+                  </>
+                )}
+              </Button>
+            )}
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-4">
+          <div className="space-y-4">
+            {messages
+              .filter(message => !message.isInternalNote || user?.role !== 'CLIENT')
+              .map((message) => (
+                <div
+                  key={message.id}
+                  className={cn(
+                    "max-w-[80%] rounded-lg p-4",
+                    message.senderId === (user?.id ?? -1)
+                      ? "ml-auto bg-gradient-to-br from-muted/30 to-background shadow-neu text-foreground" 
+                      : "bg-gradient-to-br from-primary/20 to-accent/20 shadow-neu-dark",
+                    message.isInternalNote && "border-2 border-yellow-500/20 bg-gradient-to-br from-yellow-50/50 to-yellow-100/30 shadow-neu-sm"
+                  )}
+                >
+                  <div className="flex flex-col gap-1 mb-2">
+                    <span className="text-sm font-medium">
+                      {message.sender.name || message.sender.email}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {new Date(message.createdAt).toLocaleString()}
+                    </span>
+                  </div>
+                  <p className="text-sm whitespace-pre-wrap">{message.text}</p>
+                </div>
+              ))}
+          </div>
+        </div>
+
+        <div className="flex-none p-4 border-t border-border/40">
+          {ticketId && (
+            <>
+              {ticket.status === 'CLOSED' ? (
+                <div className="bg-muted/30 rounded-lg p-4 text-center text-sm text-muted-foreground shadow-neu">
+                  This ticket is closed. You cannot send new messages.
+                </div>
+              ) : (
+                <MessageForm 
+                  ticketId={parseInt(ticketId)} 
+                  onMessageSent={fetchTicketData}
+                />
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  // Return original layout for default variant
   if (isLoading) return <LoadingSpinner />
   if (error) return <ErrorAlert message={error} />
-  if (!ticket) return <LoadingSpinner />
+  if (!ticket) return null
 
   return (
     <div className="min-h-screen bg-background">
