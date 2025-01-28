@@ -27,7 +27,6 @@ import { api } from '../../lib/api'
 import { LoadingSpinner } from '../LoadingSpinner'
 import { ErrorAlert } from '../ErrorAlert'
 import { MessageForm } from './MessageForm'
-import { Header } from '../Header'
 import { ArrowLeft, X, Check } from 'lucide-react'
 import { useAuthStore } from '../../stores/auth'
 import { Button } from '../ui/button'
@@ -113,7 +112,6 @@ export function TicketDetail() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
       <main className="container py-8">
         <div className="space-y-8">
           <div className="flex items-center">

@@ -45,6 +45,10 @@
 
 import { XCircle } from 'lucide-react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { ElementType } from 'react'
+
+// Fix AnimatePresence type issue
+const AnimatePresenceFixed = AnimatePresence as ElementType
 
 interface Requirement {
   test: (password: string) => boolean
@@ -84,7 +88,7 @@ export function PasswordRequirements({ password, isVisible }: PasswordRequiremen
 
   return (
     <div className="space-y-1 text-sm mt-2">
-      <AnimatePresence>
+      <AnimatePresenceFixed>
         {requirements.map((req, index) => {
           const isMet = req.test(password)
           if (isMet) return null
@@ -103,7 +107,7 @@ export function PasswordRequirements({ password, isVisible }: PasswordRequiremen
             </motion.div>
           )
         })}
-      </AnimatePresence>
+      </AnimatePresenceFixed>
     </div>
   )
 } 

@@ -23,7 +23,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "types": ["node"]
+    "types": ["node", "cypress"]
   },
   "include": [
     "src",
@@ -31,7 +31,8 @@
     "*.tsx",
     "*.d.ts",
     "vite.config.ts",
-    "tailwind.config.ts"
+    "tailwind.config.ts",
+    "cypress/**/*.ts"
   ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

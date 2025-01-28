@@ -9,11 +9,17 @@ import knowledgeRouter from './routes/knowledge'
 
 const app = express()
 
-// Middleware
-app.use(cors({
+const corsOptions = {
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true
-}))
+  credentials: true,
+  optionsSuccessStatus: 200,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
+  exposedHeaders: ['Access-Control-Allow-Origin', 'Access-Control-Allow-Credentials']
+}
+
+// Middleware
+app.use(cors(corsOptions))
 app.use(morgan('dev'))
 app.use(json())
 

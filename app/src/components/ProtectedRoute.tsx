@@ -164,7 +164,7 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
       console.log('ProtectedRoute cleanup')
       mountedRef.current = false
     }
-  }, [isHydrated, location.pathname, navigate, session, setSession, setUser, user, allowedRoles])
+  }, [isHydrated, location.pathname, navigate, session, setSession, setUser, user, allowedRoles, isChecking])
 
   if (!isHydrated || isChecking) {
     console.log('Showing loading spinner:', { isHydrated, isChecking })

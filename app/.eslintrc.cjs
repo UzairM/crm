@@ -31,7 +31,7 @@ module.exports = {
   ],
 
   // Base config
-  extends: ["eslint:recommended"],
+  extends: ["eslint:recommended", "plugin:storybook/recommended"],
 
   overrides: [
     // React
@@ -95,6 +95,20 @@ module.exports = {
       rules: {
         "import/no-unresolved": "error"
       }
+    },
+
+    // Cypress
+    {
+      files: ["cypress/**/*.ts"],
+      parser: "@typescript-eslint/parser",
+      parserOptions: {
+        project: "./tsconfig.cypress.json"
+      },
+      plugins: ["@typescript-eslint"],
+      extends: [
+        "plugin:@typescript-eslint/recommended",
+        "plugin:cypress/recommended"
+      ]
     },
 
     // Node
